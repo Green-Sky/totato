@@ -166,22 +166,22 @@ if (NOT TARGET toxcore)
 		# TODO: add the others
 		configure_file(
 			${TOX_DIR}toxcore/tox.h
-			${TOX_DIR}tox/tox.h
+			${toxcore_BINARY_DIR}/include/tox/tox.h
 			@ONLY
 		)
 		configure_file(
 			${TOX_DIR}toxcore/tox_events.h
-			${TOX_DIR}tox/tox_events.h
+			${toxcore_BINARY_DIR}/include/tox/tox_events.h
 			@ONLY
 		)
 		configure_file(
 			${TOX_DIR}toxcore/tox_private.h
-			${TOX_DIR}tox/tox_private.h
+			${toxcore_BINARY_DIR}/include/tox/tox_private.h
 			@ONLY
 		)
 
 		target_include_directories(toxcore PRIVATE "${TOX_DIR}toxcore")
-		target_include_directories(toxcore PUBLIC "${TOX_DIR}")
+		target_include_directories(toxcore PUBLIC "${toxcore_BINARY_DIR}/include/")
 
 		target_compile_definitions(toxcore PUBLIC USE_IPV6=1)
 		#target_compile_definitions(toxcore PUBLIC MIN_LOGGER_LEVEL=LOGGER_LEVEL_DEBUG)
