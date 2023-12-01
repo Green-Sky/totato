@@ -144,16 +144,14 @@ int main(int argc, char** argv) {
 			conf.set("tox", "save_file_path", (config_path_base / "totato.tox").u8string());
 		} else { // transform relative to config to absolute
 			const auto tox_conf_path = std::filesystem::path{conf.get_string("tox", "save_file_path").value()};
-			if (tox_conf_path.has_relative_path()) {
+			if (tox_conf_path.is_relative()) {
 				// is relative to config
-				conf.set("tox", "save_file_path", std::filesystem::canonical(tox_conf_path).u8string());
+				conf.set("tox", "save_file_path", std::filesystem::canonical(config_path_base / tox_conf_path).u8string());
 			}
 		}
 
 		// TODO: name
 	}
-
-	conf.dump();
 
 	Contact3Registry cr;
 	RegistryMessageModel rmm{cr};
@@ -195,11 +193,24 @@ int main(int argc, char** argv) {
 	}
 
 	// load from config!!!
-	for (const auto& ppath : {"../../solanaceae_ecosystem/build/bin/libplugin_transfer_auto_accept.so"}) {
-		if (!pm.add(ppath)) {
-			std::cerr << "TOTATO error: loading plugin '" << ppath << "' failed!\n";
-			// thow?
-			assert(false && "failed to load plugin");
+	// HACK: we cheat and directly access the members
+	// TODO: add api to iterate
+	if (conf._map_bool.count("PluginManager") && conf._map_bool.at("PluginManager").count("autoload")) {
+		const auto config_path_base = std::filesystem::path{config_path}.parent_path();
+
+		for (const auto& [plugin_path, plugin_autoload] : conf._map_bool.at("PluginManager").at("autoload").second) {
+			if (plugin_autoload) {
+				std::filesystem::path real_plugin_path = plugin_path;
+				if (real_plugin_path.is_relative()) {
+					real_plugin_path = config_path_base / real_plugin_path;
+				}
+
+				if (!pm.add(real_plugin_path.u8string())) {
+					std::cerr << "TOTATO error: loading plugin '" << real_plugin_path << "' failed!\n";
+					// thow?
+					assert(false && "failed to load plugin");
+				}
+			}
 		}
 	}
 
