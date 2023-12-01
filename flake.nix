@@ -25,8 +25,8 @@
       };
       solanaceae_util-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_util";
-        rev = "92eee153f2c14f97e50f44b10e2a0aeb5f8b190d";
-        hash = "sha256-otzjzY8lxanKlryahRe+S0UL7yXsRKDJbh2DYNV71QM=";
+        rev = "57d7178e76b41c5d0f8117fc8fb5791b4108cdc0";
+        hash = "sha256-CjBj1iYlJsLMsZvp857FrsmStV4AJ7SD7L+hzOgZMpg=";
       };
       solanaceae_contact-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_contact";
@@ -70,13 +70,14 @@
         cmakeFlags = [
           #"-DFETCHCONTENT_SOURCE_DIR_TOXCORE=${pkgs.libtoxcore.src}"
           "-DFETCHCONTENT_SOURCE_DIR_TOXCORE=${toxcore-src}"
-          "-DFETCHCONTENT_SOURCE_DIR_ENTT=${entt-src}"
+          "-DFETCHCONTENT_SOURCE_DIR_ENTT=${entt-src}" # the version is important
           "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_UTIL=${solanaceae_util-src}"
           "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_CONTACT=${solanaceae_contact-src}"
           "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_MESSAGE3=${solanaceae_message3-src}"
           "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_PLUGIN=${solanaceae_plugin-src}"
           "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_TOXCORE=${solanaceae_toxcore-src}"
           "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_TOX=${solanaceae_tox-src}"
+          "-DFETCHCONTENT_SOURCE_DIR_JSON=${pkgs.nlohmann_json.src}" # we care less about version here
         ];
 
         buildInputs = with pkgs; [

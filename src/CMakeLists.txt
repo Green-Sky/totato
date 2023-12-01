@@ -20,5 +20,7 @@ target_link_libraries(totato PUBLIC
 	solanaceae_toxcore
 	solanaceae_tox_contacts
 	solanaceae_tox_messages
+
+	nlohmann_json::nlohmann_json
 )
 
