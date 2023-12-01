@@ -181,6 +181,7 @@ if (NOT TARGET toxcore)
 		)
 
 		target_include_directories(toxcore PRIVATE "${TOX_DIR}toxcore")
+		target_include_directories(toxcore INTERFACE "${TOX_DIR}") #toxencryptsave
 		target_include_directories(toxcore PUBLIC "${toxcore_BINARY_DIR}/include/")
 
 		target_compile_definitions(toxcore PUBLIC USE_IPV6=1)
