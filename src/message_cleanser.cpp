@@ -7,6 +7,8 @@
 #include <chrono>
 
 MessageCleanser::MessageCleanser(Contact3Registry& cr, RegistryMessageModel& rmm) : _cr(cr), _rmm(rmm) {
+	// config
+	// has MessageCleanser::old_age
 }
 
 MessageCleanser::~MessageCleanser(void) {
