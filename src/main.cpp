@@ -12,6 +12,7 @@
 
 #include "./tox_client.hpp"
 #include "./auto_dirty.hpp"
+#include "./message_cleanser.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -156,6 +157,7 @@ int main(int argc, char** argv) {
 	Contact3Registry cr;
 	RegistryMessageModel rmm{cr};
 	MessageTimeSort mts{rmm};
+	MessageCleanser mc{cr, rmm};
 
 	PluginManager pm;
 
@@ -172,6 +174,8 @@ int main(int argc, char** argv) {
 		conf.set("tox", "name", name);
 		tc.setSelfName(name); // TODO: this is ugly
 	}
+
+	std::cout << "TOTATO: own address: " << tc.toxSelfGetAddressStr() << "\n";
 
 	ToxPrivateImpl tpi{tc.getTox()};
 	AutoDirty ad{tc};
@@ -228,6 +232,8 @@ int main(int argc, char** argv) {
 		mts.iterate();
 
 		pm.tick(/*time_delta*/0.02f);
+
+		mc.iterate(0.02f);
 
 		//std::this_thread::sleep_for( // time left to get to 60fps
 			//std::chrono::duration<float, std::chrono::seconds::period>(0.0166f) // 60fps frame duration

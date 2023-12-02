@@ -2,11 +2,15 @@ cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
 add_executable(totato
 	./main.cpp
+
 	./tox_client.hpp
 	./tox_client.cpp
 	./tox_private_impl.hpp
 	./auto_dirty.hpp
 	./auto_dirty.cpp
+
+	./message_cleanser.hpp
+	./message_cleanser.cpp
 )
 
 target_compile_features(totato PUBLIC cxx_std_17)
