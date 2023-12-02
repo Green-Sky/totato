@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
 			// default to totato.tox relative to config file
 			conf.set("tox", "save_file_path", (config_path_base / "totato.tox").u8string());
 		} else { // transform relative to config to absolute
-			const auto tox_conf_path = std::filesystem::path{conf.get_string("tox", "save_file_path").value()};
+			const auto tox_conf_path = std::filesystem::path{static_cast<std::string_view>(conf.get_string("tox", "save_file_path").value())};
 			if (tox_conf_path.is_relative()) {
 				// is relative to config
 				conf.set("tox", "save_file_path", std::filesystem::canonical(config_path_base / tox_conf_path).u8string());
