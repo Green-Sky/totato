@@ -14,7 +14,7 @@ class MessageCommandDispatcher : public RegistryMessageModelEventI {
 		std::string m; // module
 		std::string m_prefix; // module prefix (if any)
 		std::string command; // command
-		std::function<bool(std::string_view params)> fn;
+		std::function<bool(std::string_view params, Message3Handle m)> fn;
 		std::string help_text;
 
 		//Command(const Command&) = delete;
@@ -40,12 +40,12 @@ class MessageCommandDispatcher : public RegistryMessageModelEventI {
 			std::string_view m, // module
 			std::string_view m_prefix, // module prefix (if any)
 			std::string_view command, // command
-			std::function<bool(std::string_view params)>&& fn,
+			std::function<bool(std::string_view params, Message3Handle m)>&& fn,
 			std::string_view help_text
 		);
 
 		// generates a help
-		bool helpCommand(std::string_view params);
+		bool helpCommand(std::string_view params, Message3Handle m);
 
 	protected: // mm
 		bool onEvent(const Message::Events::MessageConstruct& e) override;
