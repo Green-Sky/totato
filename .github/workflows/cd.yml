@@ -47,10 +47,11 @@ jobs:
         submodules: recursive
 
     - name: Install Dependencies
+      # TODO: is 2.6 new enough?
       run: sudo apt update && sudo apt -y install nix
 
     - name: Nix build
-      run: nix build '.#static'
+      run: nix --extra-experimental-features nix-command build '.#static'
 
     - uses: actions/upload-artifact@v3
       with:
