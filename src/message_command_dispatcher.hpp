@@ -10,6 +10,17 @@ class MessageCommandDispatcher : public RegistryMessageModelEventI {
 	RegistryMessageModel& _rmm;
 	ConfigModelI& _conf;
 
+	struct Command {
+		std::string m; // module
+		std::string m_prefix; // module prefix (if any)
+		std::string command; // command
+		std::function<bool(std::string_view params)> fn;
+		std::string help_text;
+
+		//Command(const Command&) = delete;
+	};
+	std::unordered_map<std::string, Command> _command_map;
+
 	public:
 		MessageCommandDispatcher(Contact3Registry& cr, RegistryMessageModel& rmm, ConfigModelI& conf);
 		~MessageCommandDispatcher(void);
@@ -23,10 +34,18 @@ class MessageCommandDispatcher : public RegistryMessageModelEventI {
 		//  - everyone else?
 		// callable
 		// help text?
+
+
 		void registerCommand(
-			std::string_view module,
-			std::string_view command
+			std::string_view m, // module
+			std::string_view m_prefix, // module prefix (if any)
+			std::string_view command, // command
+			std::function<bool(std::string_view params)>&& fn,
+			std::string_view help_text
 		);
+
+		// generates a help
+		bool helpCommand(std::string_view params);
 
 	protected: // mm
 		bool onEvent(const Message::Events::MessageConstruct& e) override;

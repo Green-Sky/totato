@@ -11,6 +11,9 @@ add_executable(totato
 
 	./message_cleanser.hpp
 	./message_cleanser.cpp
+
+	./message_command_dispatcher.hpp
+	./message_command_dispatcher.cpp
 )
 
 target_compile_features(totato PUBLIC cxx_std_17)

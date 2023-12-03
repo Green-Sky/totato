@@ -13,6 +13,7 @@
 #include "./tox_client.hpp"
 #include "./auto_dirty.hpp"
 #include "./message_cleanser.hpp"
+#include "./message_command_dispatcher.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -158,6 +159,19 @@ int main(int argc, char** argv) {
 	RegistryMessageModel rmm{cr};
 	MessageTimeSort mts{rmm};
 	MessageCleanser mc{cr, rmm};
+	MessageCommandDispatcher mcd{cr, rmm, conf};
+
+	{ // setup basic commands for bot
+		mcd.registerCommand(
+			"host", "",
+			"info",
+			[](std::string_view) -> bool {
+				std::cout << "INFO got called :)\n";
+				return true;
+			},
+			"Get basic information about this bot"
+		);
+	}
 
 	PluginManager pm;
 

@@ -12,6 +12,8 @@
     flake-utils.lib.eachDefaultSystem (system:
     let
       pkgs = import nixpkgs { inherit system; };
+
+      # get deps
       toxcore-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "c-toxcore";
         fetchSubmodules = true;
@@ -53,44 +55,52 @@
         rev = "89e74b35f83d888f8aa2e5230811b8a5e2b101a7";
         hash = "sha256-PQw2290ahYfU13tHGzBttwrvZBXK+wKh6UF4xfUaRWQ=";
       };
+
+      pname = "totato";
+      version = "0.0.0-dev";
+
+      src = ./.;
+
+      nativeBuildInputs = with pkgs; [
+        cmake
+        ninja
+        pkg-config
+        git # cmake FetchContent
+      ];
+
+      cmakeFlags = [
+        #"-DFETCHCONTENT_SOURCE_DIR_TOXCORE=${pkgs.libtoxcore.src}"
+        "-DFETCHCONTENT_SOURCE_DIR_TOXCORE=${toxcore-src}"
+        "-DFETCHCONTENT_SOURCE_DIR_ENTT=${entt-src}" # the version is important
+        "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_UTIL=${solanaceae_util-src}"
+        "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_CONTACT=${solanaceae_contact-src}"
+        "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_MESSAGE3=${solanaceae_message3-src}"
+        "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_PLUGIN=${solanaceae_plugin-src}"
+        "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_TOXCORE=${solanaceae_toxcore-src}"
+        "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_TOX=${solanaceae_tox-src}"
+        "-DFETCHCONTENT_SOURCE_DIR_JSON=${pkgs.nlohmann_json.src}" # we care less about version here
+      ];
+
+      # TODO: replace with install command
+      installPhase = ''
+        mkdir -p $out/bin
+        mv bin/totato $out/bin
+      '';
     in {
       packages.default = pkgs.stdenv.mkDerivation {
-        pname = "totato";
-        version = "0.0.0-dev";
-
-        src = ./.;
-
-        nativeBuildInputs = with pkgs; [
-          cmake
-          ninja
-          pkg-config
-          git # cmake FetchContent
-        ];
-
-        cmakeFlags = [
-          #"-DFETCHCONTENT_SOURCE_DIR_TOXCORE=${pkgs.libtoxcore.src}"
-          "-DFETCHCONTENT_SOURCE_DIR_TOXCORE=${toxcore-src}"
-          "-DFETCHCONTENT_SOURCE_DIR_ENTT=${entt-src}" # the version is important
-          "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_UTIL=${solanaceae_util-src}"
-          "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_CONTACT=${solanaceae_contact-src}"
-          "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_MESSAGE3=${solanaceae_message3-src}"
-          "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_PLUGIN=${solanaceae_plugin-src}"
-          "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_TOXCORE=${solanaceae_toxcore-src}"
-          "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_TOX=${solanaceae_tox-src}"
-          "-DFETCHCONTENT_SOURCE_DIR_JSON=${pkgs.nlohmann_json.src}" # we care less about version here
-        ];
-
+        inherit pname version src nativeBuildInputs cmakeFlags installPhase;
         buildInputs = with pkgs; [
           #(libsodium.override { stdenv = pkgs.pkgsStatic.stdenv; })
           #pkgsStatic.libsodium
           libsodium
         ];
+      };
 
-        # TODO: replace with install command
-        installPhase = ''
-          mkdir -p $out/bin
-          mv bin/totato $out/bin
-        '';
+      packages.static = pkgs.pkgsStatic.stdenv.mkDerivation {
+        inherit pname version src nativeBuildInputs cmakeFlags installPhase;
+        buildInputs = with pkgs.pkgsStatic; [
+          libsodium
+        ];
       };
 
       #apps.default = {
