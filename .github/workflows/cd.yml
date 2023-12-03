@@ -10,6 +10,55 @@ env:
   BUILD_TYPE: Release
 
 jobs:
+  linux-ubuntu:
+    timeout-minutes: 10
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Install Dependencies
+      run: sudo apt update && sudo apt -y install libsodium-dev
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 4
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ github.event.repository.name }}-ubuntu20.04-x86_64
+        # TODO: do propper packing
+        path: |
+          ${{github.workspace}}/build/bin/
+
+  linux-nix-static:
+    timeout-minutes: 10
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Install Dependencies
+      run: sudo apt update && sudo apt -y install nix
+
+    - name: Nix build
+      run: nix build '.#static'
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ github.event.repository.name }}-linux-static-muslc-x86_64
+        # TODO: do propper packing
+        path: |
+          ${{github.workspace}}/result/bin/
+
   windows:
     timeout-minutes: 15
 

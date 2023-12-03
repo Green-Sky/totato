@@ -89,15 +89,17 @@
     in {
       packages.default = pkgs.stdenv.mkDerivation {
         inherit pname version src nativeBuildInputs cmakeFlags installPhase;
-        buildInputs = with pkgs; [
-          #(libsodium.override { stdenv = pkgs.pkgsStatic.stdenv; })
-          #pkgsStatic.libsodium
+
+        # static libsodium, because I can
+        buildInputs = with pkgs.pkgsStatic; [
           libsodium
         ];
       };
 
+      # all static, kinda useless, since dlopen() wont work to load plugins
       packages.static = pkgs.pkgsStatic.stdenv.mkDerivation {
         inherit pname version src nativeBuildInputs cmakeFlags installPhase;
+
         buildInputs = with pkgs.pkgsStatic; [
           libsodium
         ];
