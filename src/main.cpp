@@ -253,7 +253,8 @@ int main(int argc, char** argv) {
 
 				return true;
 			},
-			"Query the tox status of dht and to you."
+			"Query the tox status of dht and to you.",
+			MessageCommandDispatcher::Perms::EVERYONE
 		);
 
 		mcd.registerCommand(

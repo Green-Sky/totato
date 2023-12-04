@@ -2,12 +2,15 @@
 
 #include <solanaceae/util/config_model.hpp>
 #include <solanaceae/message3/components.hpp>
+#include <solanaceae/contact/components.hpp>
+#include <solanaceae/toxcore/utils.hpp>
 
 #include <string_view>
 #include <utility>
 #include <iostream>
 #include <vector>
 #include <map>
+#include <cassert>
 
 //MessageCommandDispatcher::Command::Command(Command&& other) :
 	//m(std::move(other.m)),
@@ -26,6 +29,9 @@ MessageCommandDispatcher::MessageCommandDispatcher(
 ) :
 	_cr(cr), _rmm(rmm), _conf(conf)
 {
+	// overwrite default admin to false
+	_conf.set("MessageCommandDispatcher", "admin", false);
+
 	_rmm.subscribe(this, RegistryMessageModel_Event::message_construct);
 
 	{ // setup basic commands for bot
@@ -35,7 +41,8 @@ MessageCommandDispatcher::MessageCommandDispatcher(
 			[this](std::string_view params, Message3Handle m) -> bool {
 				return helpCommand(params, m);
 			},
-			"Get help"
+			"Get help",
+			Perms::EVERYONE
 		);
 	}
 }
@@ -87,7 +94,8 @@ void MessageCommandDispatcher::registerCommand(
 	std::string_view m_prefix, // module prefix (if any)
 	std::string_view command, // command
 	std::function<bool(std::string_view params, Message3Handle m)>&& fn,
-	std::string_view help_text
+	std::string_view help_text,
+	Perms perms
 ) {
 	std::string full_command_string = (m_prefix.empty() ? "" : std::string{m_prefix} + " ") + std::string{command};
 
@@ -95,12 +103,30 @@ void MessageCommandDispatcher::registerCommand(
 		std::cout << "MCD warning: overwriting existing '" << full_command_string << "'\n";
 	}
 
+	assert(
+		// needs atleast one "group"
+		(perms & (
+			Perms::EVERYONE |
+			Perms::ADMIN |
+			Perms::MODERATOR
+		)) != 0u
+	);
+
+	assert(
+		// at most one "group"
+		(((perms & Perms::EVERYONE) != 0) +
+		((perms & Perms::ADMIN) != 0) +
+		((perms & Perms::MODERATOR) != 0))
+		== 1
+	);
+
 	_command_map[full_command_string] = Command{
 		std::string{m},
 		std::string{m_prefix},
 		std::string{command},
 		std::move(fn),
-		std::string{help_text}
+		std::string{help_text},
+		perms
 	};
 }
 
@@ -122,7 +148,14 @@ bool MessageCommandDispatcher::helpCommand(std::string_view params, Message3Hand
 			"=== " + module_name + " ==="
 		});
 
+		bool module_empty = true;
 		for (const auto& it : command_list) {
+			if (!hasPermission(it->second, contact_from)) {
+				continue;
+			}
+
+			module_empty = false;
+
 			std::string help_line {"  !"};
 			if (!it->second.m_prefix.empty()) {
 				help_line += it->second.m_prefix + " ";
@@ -138,15 +171,44 @@ bool MessageCommandDispatcher::helpCommand(std::string_view params, Message3Hand
 				help_line
 			});
 		}
+
+		if (module_empty) {
+			// unsend module cat title
+			_message_queue.pop_back();
+		}
 	}
 
 	return true;
 }
 
+bool MessageCommandDispatcher::hasPermission(const Command& cmd, const Contact3 contact) {
+	if (!_cr.all_of<Contact::Components::ID>(contact)) {
+		std::cerr << "MCD error: contact without ID\n";
+		return false; // default to false
+	}
+
+	if ((cmd.perms & Perms::EVERYONE) != 0) {
+		// TODO: blacklist here
+		return true;
+	}
+
+	// TODO: blacklist here
+
+	const auto id_str = bin2hex(_cr.get<Contact::Components::ID>(contact).data);
+
+	//_conf.get_bool
+	//_conf.set("MessageCommandDispatcher", "admin", false);
+
+	return false;
+}
+
 bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& e) {
-	if (!e.e.all_of<Message::Components::MessageText, Message::Components::TagUnread>()) {
+	if (!e.e.all_of<Message::Components::ContactFrom, Message::Components::MessageText, Message::Components::TagUnread>()) {
 		std::cout << "MCD: got message that is not";
 
+		if (!e.e.all_of<Message::Components::ContactFrom>()) {
+			std::cout << " contact_from";
+		}
 		if (!e.e.all_of<Message::Components::MessageText>()) {
 			std::cout << " text";
 		}
@@ -179,7 +241,6 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 	// TODO: is private
 
 	// TODO: has the permissions
-
 
 	if (false) { // is private
 	} else {
@@ -237,6 +298,8 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 		std::cout << "------- params:'" << params << "'\n";
 	}
 
+	const auto contact_from = e.e.get<Message::Components::ContactFrom>().c;
+
 	// first search first + space + second word
 	if (!second_word.empty()) {
 		std::string query {first_word};
@@ -245,6 +308,10 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 
 		const auto command_it = _command_map.find(query);
 		if (command_it != _command_map.cend()) {
+			if (!hasPermission(command_it->second, contact_from)) {
+				return false;
+			}
+
 			command_it->second.fn(params, e.e);
 			return true;
 		}
@@ -253,6 +320,10 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 	// then seach first word only
 	const auto command_it = _command_map.find(std::string{first_word});
 	if (command_it != _command_map.cend()) {
+		if (!hasPermission(command_it->second, contact_from)) {
+			return false;
+		}
+
 		params = std::string{second_word} + " " + params;
 		command_it->second.fn(params, e.e);
 		return true;
