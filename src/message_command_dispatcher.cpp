@@ -1,14 +1,13 @@
 #include "./message_command_dispatcher.hpp"
-#include "nlohmann/detail/input/position_t.hpp"
-#include "solanaceae/message3/registry_message_model.hpp"
 
-#include <cwchar>
 #include <solanaceae/util/config_model.hpp>
 #include <solanaceae/message3/components.hpp>
 
 #include <string_view>
 #include <utility>
 #include <iostream>
+#include <vector>
+#include <map>
 
 //MessageCommandDispatcher::Command::Command(Command&& other) :
 	//m(std::move(other.m)),
@@ -44,7 +43,14 @@ MessageCommandDispatcher::MessageCommandDispatcher(
 MessageCommandDispatcher::~MessageCommandDispatcher(void) {
 }
 
-void MessageCommandDispatcher::iterate(float time_delta) {
+void MessageCommandDispatcher::iterate(float) {
+	if (!_message_queue.empty()) {
+		_rmm.sendText(
+			_message_queue.front().to,
+			_message_queue.front().message
+		);
+		_message_queue.pop_front();
+	}
 }
 
 static std::string_view get_first_word(std::string_view text, std::string_view::size_type& out_next) {
@@ -101,10 +107,38 @@ void MessageCommandDispatcher::registerCommand(
 bool MessageCommandDispatcher::helpCommand(std::string_view params, Message3Handle m) {
 	std::cout << "MCD: help got called '" << params << "'\n";
 
-	_rmm.sendText(
-		m.get<Message::Components::ContactFrom>().c,
-		"I am still missing :), ping green for how it actually works."
-	);
+	std::map<std::string, std::vector<decltype(_command_map.cbegin())>> module_command_list;
+	for (auto it = _command_map.cbegin(); it != _command_map.cend(); it++) {
+		if (true) { // have permission
+			module_command_list[it->second.m].push_back(it);
+		}
+	}
+
+	const auto contact_from = m.get<Message::Components::ContactFrom>().c;
+
+	for (const auto& [module_name, command_list] : module_command_list) {
+		_message_queue.push_back({
+			contact_from,
+			"=== " + module_name + " ==="
+		});
+
+		for (const auto& it : command_list) {
+			std::string help_line {"  !"};
+			if (!it->second.m_prefix.empty()) {
+				help_line += it->second.m_prefix + " ";
+			}
+
+			help_line += it->second.command;
+
+			help_line += " - ";
+			help_line += it->second.help_text;
+
+			_message_queue.push_back({
+				contact_from,
+				help_line
+			});
+		}
+	}
 
 	return true;
 }

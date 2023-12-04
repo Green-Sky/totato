@@ -379,6 +379,8 @@ int main(int argc, char** argv) {
 
 		mc.iterate(0.02f);
 
+		mcd.iterate(0.02f);
+
 		//std::this_thread::sleep_for( // time left to get to 60fps
 			//std::chrono::duration<float, std::chrono::seconds::period>(0.0166f) // 60fps frame duration
 			//- std::chrono::duration<float, std::chrono::seconds::period>(std::chrono::steady_clock::now() - new_time) // time used for rendering

@@ -2,6 +2,8 @@
 
 #include <solanaceae/message3/registry_message_model.hpp>
 
+#include <deque>
+
 // fwd
 struct ConfigModelI;
 
@@ -20,6 +22,12 @@ class MessageCommandDispatcher : public RegistryMessageModelEventI {
 		//Command(const Command&) = delete;
 	};
 	std::unordered_map<std::string, Command> _command_map;
+
+	struct QueuedMessage {
+		Contact3 to;
+		std::string message;
+	};
+	std::deque<QueuedMessage> _message_queue;
 
 	public:
 		MessageCommandDispatcher(Contact3Registry& cr, RegistryMessageModel& rmm, ConfigModelI& conf);
