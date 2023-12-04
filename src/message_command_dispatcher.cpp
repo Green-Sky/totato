@@ -187,17 +187,23 @@ bool MessageCommandDispatcher::hasPermission(const Command& cmd, const Contact3 
 		return false; // default to false
 	}
 
+	const auto id_str = bin2hex(_cr.get<Contact::Components::ID>(contact).data);
+	std::cout << "MCD: perm check for id '" << id_str << "'\n";
+
+	// TODO: blacklist here
+	// TODO: whitelist here
+
 	if ((cmd.perms & Perms::EVERYONE) != 0) {
-		// TODO: blacklist here
 		return true;
 	}
 
-	// TODO: blacklist here
+	if ((cmd.perms & Perms::ADMIN) != 0) {
+		auto is_admin_opt = _conf.get_bool("MessageCommandDispatcher", "admin", id_str);
+		assert(is_admin_opt.has_value);
 
-	const auto id_str = bin2hex(_cr.get<Contact::Components::ID>(contact).data);
-
-	//_conf.get_bool
-	//_conf.set("MessageCommandDispatcher", "admin", false);
+		return is_admin_opt.value();
+	}
+	// TODO: moderator
 
 	return false;
 }
