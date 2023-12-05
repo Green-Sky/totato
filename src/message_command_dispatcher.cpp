@@ -29,8 +29,9 @@ MessageCommandDispatcher::MessageCommandDispatcher(
 ) :
 	_cr(cr), _rmm(rmm), _conf(conf)
 {
-	// overwrite default admin to false
+	// overwrite default admin and moderator to false
 	_conf.set("MessageCommandDispatcher", "admin", false);
+	_conf.set("MessageCommandDispatcher", "moderator", false);
 
 	_rmm.subscribe(this, RegistryMessageModel_Event::message_construct);
 
@@ -203,7 +204,13 @@ bool MessageCommandDispatcher::hasPermission(const Command& cmd, const Contact3 
 
 		return is_admin_opt.value();
 	}
-	// TODO: moderator
+
+	if ((cmd.perms & Perms::MODERATOR) != 0) {
+		auto is_mod_opt = _conf.get_bool("MessageCommandDispatcher", "moderator", id_str);
+		assert(is_mod_opt.has_value);
+
+		return is_mod_opt.value();
+	}
 
 	return false;
 }

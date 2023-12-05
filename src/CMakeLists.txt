@@ -14,6 +14,9 @@ add_executable(totato
 
 	./message_command_dispatcher.hpp
 	./message_command_dispatcher.cpp
+
+	./tox_commands.hpp
+	./tox_commands.cpp
 )
 
 target_compile_features(totato PUBLIC cxx_std_17)
