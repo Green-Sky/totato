@@ -251,11 +251,18 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 
 	// TODO: skip unrelyable synced
 
-	// TODO: is private
+	const bool is_private = _cr.any_of<Contact::Components::TagSelfWeak, Contact::Components::TagSelfStrong>(e.e.get<Message::Components::ContactTo>().c);
 
-	// TODO: has the permissions
-
-	if (false) { // is private
+	if (is_private) {
+		// check for command prefix
+		if (
+			message_text.at(0) == '!' ||
+			message_text.at(0) == '/'
+		) {
+			// starts with command prefix
+			// remove c prefix
+			message_text = message_text.substr(1);
+		}
 	} else {
 		// check for command prefix
 		if (
@@ -325,8 +332,7 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 				return false;
 			}
 
-			command_it->second.fn(params, e.e);
-			return true;
+			return command_it->second.fn(params, e.e);
 		}
 	}
 
@@ -338,8 +344,7 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 		}
 
 		params = std::string{second_word} + " " + params;
-		command_it->second.fn(params, e.e);
-		return true;
+		return command_it->second.fn(params, e.e);
 	}
 
 	return false;
