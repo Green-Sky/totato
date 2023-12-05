@@ -15,6 +15,9 @@ add_executable(totato
 	./message_command_dispatcher.hpp
 	./message_command_dispatcher.cpp
 
+	./managment_commands.hpp
+	./managment_commands.cpp
+
 	./tox_commands.hpp
 	./tox_commands.cpp
 )

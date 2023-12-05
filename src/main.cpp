@@ -15,6 +15,7 @@
 #include "./message_cleanser.hpp"
 #include "./message_command_dispatcher.hpp"
 
+#include "./managment_commands.hpp"
 #include "./tox_commands.hpp"
 
 //#include <solanaceae/message3/components.hpp>
@@ -241,6 +242,7 @@ int main(int argc, char** argv) {
 		}
 	}
 
+	registerManagementCommands(mcd, conf, cr, rmm);
 	registerToxCommands(mcd, conf, cr, rmm, tc, tpi);
 
 	conf.dump();
@@ -268,6 +270,8 @@ int main(int argc, char** argv) {
 		//);
 		std::this_thread::sleep_for(std::chrono::milliseconds(20)); // HACK: until i figure out the best main loop
 	}
+
+	conf.dump();
 
 	std::cout << "\nTOTATO shutting down...\n";
 
