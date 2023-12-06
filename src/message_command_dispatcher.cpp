@@ -3,6 +3,7 @@
 #include <solanaceae/util/config_model.hpp>
 #include <solanaceae/message3/components.hpp>
 #include <solanaceae/contact/components.hpp>
+#include <solanaceae/tox_messages/components.hpp> // TODO: move SyncedBy to global
 #include <solanaceae/toxcore/utils.hpp>
 
 #include <string_view>
@@ -249,7 +250,26 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 		return false;
 	}
 
-	// TODO: skip unrelyable synced
+	// skip unrelyable synced
+	if (e.e.all_of<Message::Components::SyncedBy>()) {
+		const auto& list = e.e.get<Message::Components::SyncedBy>().list;
+		if (
+			std::find_if(
+				list.cbegin(), list.cend(),
+				[this](const auto& it) {
+					// TODO: add weak self
+					return _cr.all_of<
+						Contact::Components::TagSelfStrong,
+						Contact::Components::TagSelfWeak // trust weak self
+					>(it);
+				}
+			) == list.cend()
+		) {
+			// self not found
+			// TODO: config for self only
+			return false;
+		}
+	}
 
 	const bool is_private = _cr.any_of<Contact::Components::TagSelfWeak, Contact::Components::TagSelfStrong>(e.e.get<Message::Components::ContactTo>().c);
 
@@ -284,7 +304,6 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 	}
 
 	std::cout << "MCD: got command '" << message_text << "'\n";
-
 
 	std::string_view first_word;
 	std::string_view second_word;
