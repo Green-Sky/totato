@@ -143,5 +143,69 @@ void registerToxCommands(
 		},
 		"join a tox group by id"
 	);
+
+	mcd.registerCommand(
+		"tox", "tox",
+		"invite",
+		[&](std::string_view params, Message3Handle m) -> bool {
+			const auto contact_from = m.get<Message::Components::ContactFrom>().c;
+
+			// trim friend extra stuff
+			if (params.size() < 32*2) {
+				rmm.sendText(
+					contact_from,
+					"error inviting, friend id is not the correct size!"
+				);
+				return true;
+			}
+			const auto friend_id = hex2bin(std::string{params.substr(0, 32*2)});
+
+			auto [friend_number_opt, err] = t.toxFriendByPublicKey(friend_id);
+			if (!friend_number_opt.has_value()) {
+				rmm.sendText(
+					contact_from,
+					"error inviting, friend not found!"
+				);
+				return true;
+			}
+
+			// get current group
+			if (!cr.all_of<Contact::Components::Parent>(contact_from)) {
+				rmm.sendText(
+					contact_from,
+					"error inviting, not sent from group!"
+				);
+				return true;
+			}
+			const auto contact_group = cr.get<Contact::Components::Parent>(contact_from).parent;
+
+			if (!cr.all_of<Contact::Components::ToxGroupEphemeral>(contact_from)) {
+				rmm.sendText(
+					contact_from,
+					"error inviting, group not connected (what?!?)!"
+				);
+				return true;
+			}
+
+			const auto inv_err = t.toxGroupInviteFriend(
+				cr.get<Contact::Components::ToxGroupEphemeral>(contact_group).group_number,
+				friend_number_opt.value()
+			);
+			if (inv_err == Tox_Err_Group_Invite_Friend::TOX_ERR_GROUP_INVITE_FRIEND_OK) {
+				rmm.sendText(
+					contact_from,
+					"invite sent..."
+				);
+			} else {
+				rmm.sendText(
+					contact_from,
+					"error inviting to group, error code " + std::to_string(inv_err)
+				);
+			}
+
+			return true;
+		},
+		"invite a tox friend to the same tox group"
+	);
 }
 
