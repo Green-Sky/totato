@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.14...3.24 FATAL_ERROR)
 
 if (NOT TARGET toxcore)
 
@@ -161,8 +161,6 @@ if (NOT TARGET toxcore)
 			${TOX_DIR}toxencryptsave/toxencryptsave.h
 		)
 
-		# HACK: "install" api headers into self
-		# this is dirty, should be binary dir
 		# TODO: add the others
 		configure_file(
 			${TOX_DIR}toxcore/tox.h
