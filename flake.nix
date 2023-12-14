@@ -27,8 +27,8 @@
       };
       solanaceae_util-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_util";
-        rev = "57d7178e76b41c5d0f8117fc8fb5791b4108cdc0";
-        hash = "sha256-CjBj1iYlJsLMsZvp857FrsmStV4AJ7SD7L+hzOgZMpg=";
+        rev = "2b20c2d2a45ad1005e794c704b3fc831ca1d3830";
+        hash = "sha256-eLDIFQOA3NjdjK1MPpdNJl9mYQgtJK9IV4CaOyenae8=";
       };
       solanaceae_contact-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_contact";
@@ -37,8 +37,8 @@
       };
       solanaceae_message3-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_message3";
-        rev = "48fb5f0889404370006ae12b3637a77d7d4ba485";
-        hash = "sha256-kFA90EpAH/BciHDD7NwZs7KL1cDcGVQZCRjOazxMbvM=";
+        rev = "1a036c2321e06d4c36f3e2148e67dfe6aa379296";
+        hash = "sha256-vcUN7tsy6E1P5juhW7pj9OUtZLytZcpPijlIj/iTBgk=";
       };
       solanaceae_plugin-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_plugin";

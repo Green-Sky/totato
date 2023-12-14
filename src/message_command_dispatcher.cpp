@@ -246,6 +246,7 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 	std::string_view message_text = e.e.get<Message::Components::MessageText>().text;
 
 	if (message_text.empty()) {
+		std::cout << "MCD warning: empty message\n";
 		// empty message?
 		return false;
 	}
@@ -258,7 +259,7 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 				list.cbegin(), list.cend(),
 				[this](const auto& it) {
 					// TODO: add weak self
-					return _cr.all_of<
+					return _cr.any_of<
 						Contact::Components::TagSelfStrong,
 						Contact::Components::TagSelfWeak // trust weak self
 					>(it);

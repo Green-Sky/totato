@@ -18,6 +18,9 @@ add_executable(totato
 	./managment_commands.hpp
 	./managment_commands.cpp
 
+	./config_commands.hpp
+	./config_commands.cpp
+
 	./tox_commands.hpp
 	./tox_commands.cpp
 )
