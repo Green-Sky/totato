@@ -17,8 +17,8 @@
       toxcore-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "c-toxcore";
         fetchSubmodules = true;
-        rev = "d4b06edc2a35bad51b0f0950d74f61c8c70630ab"; # ngc_events
-        hash = "sha256-P7wTojRQRtvTx+h9+QcFdO381hniWWpAy5Yv63KWWZA=";
+        rev = "adbd5b32d85d9c13800f5ece17c0a9dce99faacd"; # ngc_events
+        hash = "sha256-imXy3++MKMDgftfJn5TdocxsrXewDSHVgLT6X7WtVo4=";
       };
       entt-src = pkgs.fetchFromGitHub {
         owner = "skypjack"; repo = "entt";
@@ -65,7 +65,6 @@
         cmake
         ninja
         pkg-config
-        git # cmake FetchContent
       ];
 
       cmakeFlags = [
