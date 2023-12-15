@@ -1,5 +1,7 @@
 #pragma once
 
+#include <solanaceae/util/config_model.hpp>
+
 #include <solanaceae/toxcore/tox_default_impl.hpp>
 #include <solanaceae/toxcore/tox_event_interface.hpp>
 #include <solanaceae/toxcore/tox_event_provider_base.hpp>
@@ -24,8 +26,7 @@ class ToxClient : public ToxDefaultImpl, public ToxEventProviderBase {
 		bool _tox_profile_dirty {true}; // set in callbacks
 
 	public:
-		//ToxClient(/*const CommandLine& cl*/);
-		ToxClient(std::string_view save_path, std::string_view save_password);
+		ToxClient(ConfigModelI& conf, std::string_view save_path, std::string_view save_password);
 		~ToxClient(void);
 
 	public: // tox stuff

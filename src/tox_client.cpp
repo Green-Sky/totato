@@ -2,6 +2,7 @@
 
 // meh, change this
 #include <exception>
+#include <stdexcept>
 #include <system_error>
 #include <toxencryptsave/toxencryptsave.h>
 
@@ -18,12 +19,13 @@ static void eee(std::string& mod) {
 	}
 }
 
-ToxClient::ToxClient(std::string_view save_path, std::string_view save_password) :
+ToxClient::ToxClient(ConfigModelI& conf, std::string_view save_path, std::string_view save_password) :
 	_tox_profile_path(save_path), _tox_profile_password(save_password)
 {
 	TOX_ERR_OPTIONS_NEW err_opt_new;
 	Tox_Options* options = tox_options_new(&err_opt_new);
 	assert(err_opt_new == TOX_ERR_OPTIONS_NEW::TOX_ERR_OPTIONS_NEW_OK);
+	std::string tmp_proxy_host; // the string needs to survive until options is freed
 
 	std::vector<uint8_t> profile_data{};
 	if (!_tox_profile_path.empty()) {
@@ -66,6 +68,40 @@ ToxClient::ToxClient(std::string_view save_path, std::string_view save_password)
 			ifile.close(); // do i need this?
 		}
 	}
+
+	tox_options_set_ipv6_enabled(options, conf.get_bool("tox", "ipv6_enabled").value_or(true));
+	tox_options_set_udp_enabled(options, conf.get_bool("tox", "udp_enabled").value_or(true));
+	tox_options_set_local_discovery_enabled(options, conf.get_bool("tox", "local_discovery_enabled").value_or(true));
+	// TODO: should this be exposed?
+	tox_options_set_dht_announcements_enabled(options, conf.get_bool("tox", "dht_announcements_enabled").value_or(true));
+
+	const size_t proxy_conf_sum = conf.has_string("tox", "proxy_type")
+		+ conf.has_string("tox", "proxy_host")
+		+ conf.has_int("tox", "proxy_port")
+	;
+	// if all proxy parts defined
+	if (proxy_conf_sum == 3) {
+		const std::string_view proxy_type_str = conf.get_string("tox", "proxy_type").value();
+		if (proxy_type_str == "HTTP") {
+			tox_options_set_proxy_type(options, Tox_Proxy_Type::TOX_PROXY_TYPE_HTTP);
+		} else if (proxy_type_str == "SOCKS5") {
+			tox_options_set_proxy_type(options, Tox_Proxy_Type::TOX_PROXY_TYPE_SOCKS5);
+		} else {
+			throw std::runtime_error("invalid proxy type in config, terminating to be safe");
+		}
+
+		tmp_proxy_host = conf.get_string("tox", "proxy_host").value();
+		tox_options_set_proxy_host(options, tmp_proxy_host.c_str());
+
+		tox_options_set_proxy_port(options, conf.get_int("tox", "proxy_port").value());
+	} else if (proxy_conf_sum > 0) {
+		throw std::runtime_error("config only partly specified proxy, terminating to be safe");
+	}
+
+	tox_options_set_start_port(options, conf.get_int("tox", "start_port").value_or(0));
+	tox_options_set_end_port(options, conf.get_int("tox", "end_port").value_or(0));
+	tox_options_set_tcp_port(options, conf.get_int("tox", "tcp_port").value_or(0));
+	tox_options_set_hole_punching_enabled(options, conf.get_bool("tox", "hole_punching_enabled").value_or(true));
 
 	TOX_ERR_NEW err_new;
 	_tox = tox_new(options, &err_new);

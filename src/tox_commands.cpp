@@ -38,7 +38,6 @@ void registerToxCommands(
 				reply += "tcp-relayed";
 			}
 
-
 			reply += "\ndht-closenum:";
 			reply += std::to_string(tp.toxDHTGetNumCloselist());
 			reply += "\ndht-closenum-announce-capable:";

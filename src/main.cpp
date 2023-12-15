@@ -189,7 +189,7 @@ int main(int argc, char** argv) {
 	ToxEventLogger tel{std::cout}; // TODO: config
 
 	// TODO: password?
-	ToxClient tc{conf.get_string("tox", "save_file_path").value(), ""};
+	ToxClient tc{conf, conf.get_string("tox", "save_file_path").value(), ""};
 	tel.subscribeAll(tc);
 	{ // name stuff
 		auto name = tc.toxSelfGetName();
