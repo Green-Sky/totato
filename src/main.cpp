@@ -18,6 +18,7 @@
 #include "./managment_commands.hpp"
 #include "./config_commands.hpp"
 #include "./tox_commands.hpp"
+#include "./fun_commands.hpp"
 
 //#include <solanaceae/message3/components.hpp>
 //#include <solanaceae/contact/components.hpp>
@@ -247,6 +248,7 @@ int main(int argc, char** argv) {
 	// TODO: finish impl
 	//registerConfigCommands(mcd, conf, cr, rmm);
 	registerToxCommands(mcd, conf, cr, rmm, tc, tpi);
+	registerFunCommands(mcd, conf, cr, rmm);
 
 	conf.dump();
 

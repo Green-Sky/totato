@@ -23,6 +23,9 @@ add_executable(totato
 
 	./tox_commands.hpp
 	./tox_commands.cpp
+
+	./fun_commands.hpp
+	./fun_commands.cpp
 )
 
 target_compile_features(totato PUBLIC cxx_std_17)
