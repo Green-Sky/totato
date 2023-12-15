@@ -38,6 +38,12 @@ void registerToxCommands(
 				reply += "tcp-relayed";
 			}
 
+
+			reply += "\ndht-closenum:";
+			reply += std::to_string(tp.toxDHTGetNumCloselist());
+			reply += "\ndht-closenum-announce-capable:";
+			reply += std::to_string(tp.toxDHTGetNumCloselistAnnounceCapable());
+
 			if (cr.all_of<Contact::Components::ToxFriendEphemeral>(contact_from)) {
 				const auto con_opt = t.toxFriendGetConnectionStatus(cr.get<Contact::Components::ToxFriendEphemeral>(contact_from).friend_number);
 				if (!con_opt.has_value() || con_opt.value() == Tox_Connection::TOX_CONNECTION_NONE) {
