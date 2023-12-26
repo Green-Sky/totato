@@ -13,16 +13,6 @@
 #include <map>
 #include <cassert>
 
-//MessageCommandDispatcher::Command::Command(Command&& other) :
-	//m(std::move(other.m)),
-	//m_prefix(std::move(other.m_prefix)),
-	//command(std::move(other.command)),
-	//fn(std::move(other.fn)),
-	//help_text(std::move(other.help_text))
-//{
-	//// is this really needed?
-//}
-
 MessageCommandDispatcher::MessageCommandDispatcher(
 	Contact3Registry& cr,
 	RegistryMessageModel& rmm,
