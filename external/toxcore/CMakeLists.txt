@@ -146,6 +146,8 @@ if (NOT TARGET toxcore)
 			${TOX_DIR}toxcore/tox.c
 			${TOX_DIR}toxcore/tox_dispatch.c
 			${TOX_DIR}toxcore/tox_dispatch.h
+			${TOX_DIR}toxcore/tox_event.c
+			${TOX_DIR}toxcore/tox_event.h
 			${TOX_DIR}toxcore/tox_events.c
 			${TOX_DIR}toxcore/tox_events.h
 			${TOX_DIR}toxcore/tox.h

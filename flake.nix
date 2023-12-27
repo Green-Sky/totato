@@ -14,11 +14,12 @@
       pkgs = import nixpkgs { inherit system; };
 
       # get deps
+      # TODO: move to inputs and lock file
       toxcore-src = pkgs.fetchFromGitHub {
-        owner = "Green-Sky"; repo = "c-toxcore";
+        owner = "TokTok"; repo = "c-toxcore";
         fetchSubmodules = true;
-        rev = "adbd5b32d85d9c13800f5ece17c0a9dce99faacd"; # ngc_events
-        hash = "sha256-imXy3++MKMDgftfJn5TdocxsrXewDSHVgLT6X7WtVo4=";
+        rev = "f1df709b8792da4c0e946d826b11df77d565064d"; # iphydf:ordered-events pr
+        hash = "sha256-P3+Y+IBy932TtR+j25G6yzQqfDLvdLv/c+9fvF1b5LY=";
       };
       entt-src = pkgs.fetchFromGitHub {
         owner = "skypjack"; repo = "entt";
@@ -42,18 +43,18 @@
       };
       solanaceae_plugin-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_plugin";
-        rev = "eeab3109e76907a0e3e8c526956ff0fa9b3bd3a2";
-        hash = "sha256-knW8S4VK/U3xAWFyczSNXwx2ZA9hq2XSyr39Xh2Nsgs=";
+        rev = "96bab0200f5b13671756abe7e3132ed78aaa2a40";
+        hash = "sha256-UTOdTiZLsiFs/3SZdrxfynX9OYVlDXEeG6VFIHXIxlA=";
       };
       solanaceae_toxcore-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_toxcore";
-        rev = "d05875f489577e9a2c26234810058b41c3236cf7";
-        hash = "sha256-uQVEkTn9ww/LVhPOqrq/iKIFSaDC6/BNrYGNUg+LrzA=";
+        rev = "54084b5a53e1617ff9b0c225880b0f1d60fe65ea";
+        hash = "sha256-yuOuZZAacnUUPbxL01sUx/r210E8TJQfgVZms6YROVk=";
       };
       solanaceae_tox-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_tox";
-        rev = "89e74b35f83d888f8aa2e5230811b8a5e2b101a7";
-        hash = "sha256-PQw2290ahYfU13tHGzBttwrvZBXK+wKh6UF4xfUaRWQ=";
+        rev = "c01d91144ce10486ff6e98a2e6e8cc5e20a5c412";
+        hash = "sha256-oCDx/bK433AZ5+xx0kq/NudylTMQK+6ycddaQRse/+0=";
       };
 
       pname = "totato";
