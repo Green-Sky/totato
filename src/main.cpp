@@ -1,3 +1,5 @@
+#include <bits/chrono.h>
+#include <cstdint>
 #include <solanaceae/util/simple_config_model.hpp>
 #include <solanaceae/contact/contact_model3.hpp>
 #include <solanaceae/message3/registry_message_model.hpp>
@@ -19,6 +21,7 @@
 #include "./config_commands.hpp"
 #include "./tox_commands.hpp"
 #include "./fun_commands.hpp"
+#include <solanaceae/message3/components.hpp> // TODO: move uptime
 
 //#include <solanaceae/message3/components.hpp>
 //#include <solanaceae/contact/components.hpp>
@@ -121,6 +124,7 @@ int main(int argc, char** argv) {
 	signal(SIGINT, sigint_handler);
 #endif
 
+	const auto started_at = std::chrono::steady_clock::now();
 	auto last_time = std::chrono::steady_clock::now();
 
 	std::string config_path {"config.json"};
@@ -250,6 +254,42 @@ int main(int argc, char** argv) {
 	registerToxCommands(mcd, conf, cr, rmm, tc, tpi);
 	registerFunCommands(mcd, conf, cr, rmm);
 
+	mcd.registerCommand(
+		"totato", "",
+		"uptime",
+		[&](std::string_view params, Message3Handle m) -> bool {
+			const auto contact_from = m.get<Message::Components::ContactFrom>().c;
+
+			const auto uptime = (std::chrono::steady_clock::now() - started_at);
+
+			const auto days = std::chrono::duration_cast<std::chrono::duration<int64_t, std::ratio<86400>>>(uptime);
+			const auto hours = std::chrono::duration_cast<std::chrono::hours>(uptime) - std::chrono::duration_cast<std::chrono::hours>(days);
+			const auto minutes = (std::chrono::duration_cast<std::chrono::minutes>(uptime) - std::chrono::duration_cast<std::chrono::minutes>(days)) - std::chrono::duration_cast<std::chrono::minutes>(hours);
+			const auto seconds = ((std::chrono::duration_cast<std::chrono::seconds>(uptime) - std::chrono::duration_cast<std::chrono::seconds>(days)) - std::chrono::duration_cast<std::chrono::seconds>(hours)) - std::chrono::duration_cast<std::chrono::seconds>(minutes);
+
+			std::string reply_text;
+			reply_text += "totato uptime: ";
+			reply_text += std::to_string(days.count());
+			reply_text += "d ";
+			reply_text += std::to_string(hours.count());
+			reply_text += "h ";
+			reply_text += std::to_string(minutes.count());
+			reply_text += "min ";
+			reply_text += std::to_string(seconds.count());
+			reply_text += "s (";
+			reply_text += std::to_string(std::chrono::duration_cast<std::chrono::seconds>(uptime).count());
+			reply_text += "s)";
+
+			rmm.sendText(
+				contact_from,
+				reply_text
+			);
+			return true;
+		},
+		"get current uptime.",
+		MessageCommandDispatcher::Perms::EVERYONE // mod?
+	);
+
 	conf.dump();
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(10)); // at startup, just to be safe
@@ -263,7 +303,7 @@ int main(int argc, char** argv) {
 
 		mts.iterate();
 
-		pm.tick(/*time_delta*/0.02f);
+		const float pm_interval = pm.tick(/*time_delta*/0.02f);
 
 		mc.iterate(0.02f);
 
