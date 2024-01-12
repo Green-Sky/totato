@@ -1,5 +1,3 @@
-#include <bits/chrono.h>
-#include <cstdint>
 #include <solanaceae/util/simple_config_model.hpp>
 #include <solanaceae/contact/contact_model3.hpp>
 #include <solanaceae/message3/registry_message_model.hpp>
@@ -30,6 +28,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <cstdint>
 #include <chrono>
 #include <thread>
 #include <atomic>
