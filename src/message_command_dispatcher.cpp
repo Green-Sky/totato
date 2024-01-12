@@ -243,16 +243,15 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 
 	// skip unrelyable synced
 	if (e.e.all_of<Message::Components::SyncedBy>()) {
-		const auto& list = e.e.get<Message::Components::SyncedBy>().list;
+		const auto& list = e.e.get<Message::Components::SyncedBy>().ts;
 		if (
 			std::find_if(
 				list.cbegin(), list.cend(),
-				[this](const auto& it) {
-					// TODO: add weak self
+				[this](const auto&& it) {
 					return _cr.any_of<
 						Contact::Components::TagSelfStrong,
 						Contact::Components::TagSelfWeak // trust weak self
-					>(it);
+					>(it.first);
 				}
 			) == list.cend()
 		) {
