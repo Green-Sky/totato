@@ -3,7 +3,6 @@
 #include <solanaceae/util/config_model.hpp>
 #include <solanaceae/message3/components.hpp>
 #include <solanaceae/contact/components.hpp>
-#include <solanaceae/tox_messages/components.hpp> // TODO: move SyncedBy to global
 #include <solanaceae/toxcore/utils.hpp>
 
 #include <string_view>
@@ -18,7 +17,7 @@ MessageCommandDispatcher::MessageCommandDispatcher(
 	RegistryMessageModel& rmm,
 	ConfigModelI& conf
 ) :
-	_cr(cr), _rmm(rmm), _conf(conf)
+	_cr(cr), _rmm(rmm), _conf(conf), _program_started_at(Message::getTimeMS())
 {
 	// overwrite default admin and moderator to false
 	_conf.set("MessageCommandDispatcher", "admin", false);
@@ -231,6 +230,14 @@ bool MessageCommandDispatcher::onEvent(const Message::Events::MessageConstruct& 
 		}
 		std::cout << "\n";
 		return false;
+	}
+
+	if (e.e.any_of<Message::Components::Timestamp>()) {
+		// test if message was written before program was started (-1s)
+		if (e.e.get<Message::Components::Timestamp>().ts + 1'000 < _program_started_at) {
+			// message too old
+			return false;
+		}
 	}
 
 	std::string_view message_text = e.e.get<Message::Components::MessageText>().text;

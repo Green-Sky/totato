@@ -51,6 +51,8 @@ class MessageCommandDispatcher : public RegistryMessageModelEventI {
 		};
 		std::deque<QueuedMessage> _message_queue;
 
+		uint64_t _program_started_at {0};
+
 	public:
 		MessageCommandDispatcher(Contact3Registry& cr, RegistryMessageModel& rmm, ConfigModelI& conf);
 		~MessageCommandDispatcher(void);
