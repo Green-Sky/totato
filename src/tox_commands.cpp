@@ -2,15 +2,15 @@
 
 #include <solanaceae/contact/contact_model3.hpp>
 #include <solanaceae/util/config_model.hpp>
+#include <solanaceae/util/utils.hpp>
 #include <solanaceae/toxcore/tox_interface.hpp>
 #include <solanaceae/toxcore/tox_private_interface.hpp>
 
-#include "./message_command_dispatcher.hpp"
+#include <solanaceae/message3/message_command_dispatcher.hpp>
 
 #include <solanaceae/message3/components.hpp>
 #include <solanaceae/contact/components.hpp>
 #include <solanaceae/tox_contacts/components.hpp>
-#include <solanaceae/toxcore/utils.hpp>
 
 #include <iostream>
 

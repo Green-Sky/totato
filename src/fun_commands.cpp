@@ -4,7 +4,7 @@
 #include <solanaceae/contact/contact_model3.hpp>
 //#include <solanaceae/util/config_model.hpp>
 
-#include "./message_command_dispatcher.hpp"
+#include <solanaceae/message3/message_command_dispatcher.hpp>
 
 #include <solanaceae/message3/components.hpp>
 //#include <solanaceae/contact/components.hpp>
