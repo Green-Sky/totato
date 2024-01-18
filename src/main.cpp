@@ -213,7 +213,7 @@ int main(int argc, char** argv) {
 
 	{ // setup plugin instances
 		g_provideInstance<ConfigModelI>("ConfigModelI", "host", &conf);
-		g_provideInstance<Contact3Registry>("Contact3Registry", "host", &cr);
+		g_provideInstance<Contact3Registry>("Contact3Registry", "1", "host", &cr);
 		g_provideInstance<RegistryMessageModel>("RegistryMessageModel", "host", &rmm);
 		g_provideInstance<MessageCommandDispatcher>("MessageCommandDispatcher", "host", &mcd);
 
