@@ -38,7 +38,12 @@ void MessageCleanser::iterate(float time_delta) {
 					}
 				});
 
-				reg->destroy(to_remove.cbegin(), to_remove.cend());
+				//reg->destroy(to_remove.cbegin(), to_remove.cend());
+				// we need to notify for every destruction, and give every listener a last chance
+				for (const auto c : to_remove) {
+					_rmm.throwEventDestroy(*reg, c);
+					reg->destroy(c);
+				}
 				deleted_count += to_remove.size();
 			}
 		}
