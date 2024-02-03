@@ -313,12 +313,16 @@ int main(int argc, char** argv) {
 
 			mc.iterate(time_delta_tick);
 
-			mcd.iterate(time_delta_tick);
+			const float mcd_interval = mcd.iterate(time_delta_tick);
 			const float tox_interval = std::pow(tc.toxIterationInterval(), 1.6f) / 1000.f;
 
 			last_min_interval = std::min<float>(
 				tox_interval,
 				pm_interval
+			);
+			last_min_interval = std::min<float>(
+				last_min_interval,
+				mcd_interval
 			);
 
 			// dont sleep and do an extra check
