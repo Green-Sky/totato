@@ -29,6 +29,7 @@
 #include <nlohmann/json.hpp>
 
 #include <cstdint>
+#include <cmath>
 #include <chrono>
 #include <thread>
 #include <atomic>
@@ -124,7 +125,7 @@ int main(int argc, char** argv) {
 #endif
 
 	const auto started_at = std::chrono::steady_clock::now();
-	auto last_time = std::chrono::steady_clock::now();
+	auto last_time_tick = std::chrono::steady_clock::now();
 
 	std::string config_path {"config.json"};
 
@@ -291,28 +292,45 @@ int main(int argc, char** argv) {
 
 	conf.dump();
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(10)); // at startup, just to be safe
+	std::this_thread::sleep_for(std::chrono::milliseconds(25)); // at startup, just to be safe
 
+	float last_min_interval {0.1f};
 	while (!quit) {
-		//auto new_time = std::chrono::steady_clock::now();
+		auto new_time = std::chrono::steady_clock::now();
+		const float time_delta_tick = std::chrono::duration<float, std::chrono::seconds::period>(new_time - last_time_tick).count();
 
-		quit = !tc.iterate();
-		tcm.iterate(/*time_delta*/0.02f);
-		ttm.iterate();
+		// TODO: implement the equivalent of screen->nextTick() for plugs
+		const bool tick = time_delta_tick >= last_min_interval;
 
-		mts.iterate();
+		if (tick) {
+			quit = !tc.iterate();
+			tcm.iterate(time_delta_tick);
+			ttm.iterate();
 
-		const float pm_interval = pm.tick(/*time_delta*/0.02f);
+			mts.iterate();
 
-		mc.iterate(0.02f);
+			const float pm_interval = pm.tick(time_delta_tick);
 
-		mcd.iterate(0.02f);
+			mc.iterate(time_delta_tick);
 
-		//std::this_thread::sleep_for( // time left to get to 60fps
-			//std::chrono::duration<float, std::chrono::seconds::period>(0.0166f) // 60fps frame duration
-			//- std::chrono::duration<float, std::chrono::seconds::period>(std::chrono::steady_clock::now() - new_time) // time used for rendering
-		//);
-		std::this_thread::sleep_for(std::chrono::milliseconds(20)); // HACK: until i figure out the best main loop
+			mcd.iterate(time_delta_tick);
+			const float tox_interval = std::pow(tc.toxIterationInterval(), 1.6f) / 1000.f;
+
+			last_min_interval = std::min<float>(
+				tox_interval,
+				pm_interval
+			);
+
+			// dont sleep and do an extra check
+
+			last_time_tick = new_time;
+			//std::cout << "M: time_delta_tick: " << time_delta_tick << "\n";
+			//std::cout << "M: last_min_interval: " << last_min_interval << " (t:" << tox_interval << " p:" << pm_interval << ")\n";
+		} else {
+			// TODO: replace with something that works on windows
+			const float sleep_dur = std::max(last_min_interval-time_delta_tick, 0.001f);
+			std::this_thread::sleep_for(std::chrono::milliseconds(int64_t(sleep_dur*1000)));
+		}
 	}
 
 	conf.dump();
