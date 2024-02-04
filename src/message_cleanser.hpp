@@ -14,5 +14,5 @@ class MessageCleanser {
 		MessageCleanser(Contact3Registry& cr, RegistryMessageModel& rmm);
 		~MessageCleanser(void);
 
-		void iterate(float time_delta);
+		float iterate(float time_delta);
 };

@@ -44,6 +44,16 @@
 #include <signal.h>
 #endif
 
+// why is min not variadic?
+template<typename... T>
+float min_var(float v0, T... args) {
+	if constexpr (sizeof...(args) == 0) {
+		return v0;
+	} else {
+		return std::min(v0, min_var(args...));
+	}
+}
+
 std::atomic_bool quit = false;
 
 #if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__)) || defined (_WIN32)
@@ -310,19 +320,15 @@ int main(int argc, char** argv) {
 			mts.iterate();
 
 			const float pm_interval = pm.tick(time_delta_tick);
-
-			mc.iterate(time_delta_tick);
-
+			const float mc_interval = mc.iterate(time_delta_tick);
 			const float mcd_interval = mcd.iterate(time_delta_tick);
 			const float tox_interval = std::pow(tc.toxIterationInterval(), 1.6f) / 1000.f;
 
-			last_min_interval = std::min<float>(
-				tox_interval,
-				pm_interval
-			);
-			last_min_interval = std::min<float>(
-				last_min_interval,
-				mcd_interval
+			last_min_interval = min_var(
+				pm_interval,
+				mc_interval,
+				mcd_interval,
+				tox_interval
 			);
 
 			// dont sleep and do an extra check

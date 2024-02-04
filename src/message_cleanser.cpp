@@ -14,7 +14,7 @@ MessageCleanser::MessageCleanser(Contact3Registry& cr, RegistryMessageModel& rmm
 MessageCleanser::~MessageCleanser(void) {
 }
 
-void MessageCleanser::iterate(float time_delta) {
+float MessageCleanser::iterate(float time_delta) {
 	_timer += time_delta;
 	if (_timer >= _interval) {
 		_timer = 0.f;
@@ -52,4 +52,6 @@ void MessageCleanser::iterate(float time_delta) {
 			std::cout << "MC: cleaned up " << deleted_count << "\n";
 		}
 	}
+
+	return _interval - _timer;
 }
