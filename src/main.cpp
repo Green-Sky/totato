@@ -182,7 +182,7 @@ int main(int argc, char** argv) {
 	Contact3Registry cr;
 	RegistryMessageModel rmm{cr};
 	MessageTimeSort mts{rmm};
-	MessageCleanser mc{cr, rmm};
+	MessageCleanser mc{cr, rmm, conf};
 	MessageCommandDispatcher mcd{cr, rmm, conf};
 
 	{ // setup basic commands for bot
