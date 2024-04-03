@@ -8,9 +8,8 @@ if (NOT TARGET toxcore)
 	include(FetchContent)
 
 	FetchContent_Declare(toxcore
-		# waiting for events on master
-		GIT_REPOSITORY https://github.com/Green-Sky/c-toxcore.git
-		GIT_TAG ngc_events
+		GIT_REPOSITORY https://github.com/TokTok/c-toxcore.git
+		GIT_TAG v0.2.19
 		EXCLUDE_FROM_ALL
 	)
 
