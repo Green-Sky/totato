@@ -38,6 +38,8 @@ if (NOT TARGET toxcore)
 			${TOX_DIR}toxcore/ccompat.h
 			${TOX_DIR}toxcore/crypto_core.c
 			${TOX_DIR}toxcore/crypto_core.h
+			${TOX_DIR}toxcore/crypto_core_pack.c
+			${TOX_DIR}toxcore/crypto_core_pack.h
 			${TOX_DIR}toxcore/DHT.c
 			${TOX_DIR}toxcore/DHT.h
 			${TOX_DIR}toxcore/events/conference_connected.c
@@ -46,6 +48,7 @@ if (NOT TARGET toxcore)
 			${TOX_DIR}toxcore/events/conference_peer_list_changed.c
 			${TOX_DIR}toxcore/events/conference_peer_name.c
 			${TOX_DIR}toxcore/events/conference_title.c
+			${TOX_DIR}toxcore/events/dht_get_nodes_response.c
 			${TOX_DIR}toxcore/events/events_alloc.c
 			${TOX_DIR}toxcore/events/events_alloc.h
 			${TOX_DIR}toxcore/events/file_chunk_request.c
@@ -153,6 +156,8 @@ if (NOT TARGET toxcore)
 			${TOX_DIR}toxcore/tox.h
 			${TOX_DIR}toxcore/tox_private.c
 			${TOX_DIR}toxcore/tox_private.h
+			${TOX_DIR}toxcore/tox_pack.c
+			${TOX_DIR}toxcore/tox_pack.h
 			${TOX_DIR}toxcore/tox_unpack.c
 			${TOX_DIR}toxcore/tox_unpack.h
 			${TOX_DIR}toxcore/util.c
@@ -184,7 +189,6 @@ if (NOT TARGET toxcore)
 		target_include_directories(toxcore INTERFACE "${TOX_DIR}") #toxencryptsave
 		target_include_directories(toxcore PUBLIC "${toxcore_BINARY_DIR}/include/")
 
-		target_compile_definitions(toxcore PUBLIC USE_IPV6=1)
 		#target_compile_definitions(toxcore PUBLIC MIN_LOGGER_LEVEL=LOGGER_LEVEL_DEBUG)
 		target_compile_definitions(toxcore PUBLIC MIN_LOGGER_LEVEL=LOGGER_LEVEL_INFO)
 
