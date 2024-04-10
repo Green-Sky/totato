@@ -155,10 +155,13 @@ ToxClient::ToxClient(ConfigModelI& conf, std::string_view save_path, std::string
 }
 
 ToxClient::~ToxClient(void) {
+	if (_tox_profile_dirty) {
+		saveToxProfile();
+	}
 	tox_kill(_tox);
 }
 
-bool ToxClient::iterate(void) {
+bool ToxClient::iterate(float time_delta) {
 	Tox_Err_Events_Iterate err_e_it = TOX_ERR_EVENTS_ITERATE_OK;
 	auto* events = tox_events_iterate(_tox, false, &err_e_it);
 	if (err_e_it == TOX_ERR_EVENTS_ITERATE_OK && events != nullptr) {
@@ -170,7 +173,8 @@ bool ToxClient::iterate(void) {
 
 	tox_events_free(events);
 
-	if (_tox_profile_dirty) {
+	_save_heat -= time_delta;
+	if (_tox_profile_dirty && _save_heat <= 0.f) {
 		saveToxProfile();
 	}
 
@@ -214,5 +218,6 @@ void ToxClient::saveToxProfile(void) {
 	}
 
 	_tox_profile_dirty = false;
+	_save_heat = 10.f;
 }
 

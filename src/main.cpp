@@ -198,7 +198,6 @@ int main(int argc, char** argv) {
 
 	}
 
-	PluginManager pm;
 
 	ToxEventLogger tel{std::cout}; // TODO: config
 
@@ -221,6 +220,8 @@ int main(int argc, char** argv) {
 	ToxContactModel2 tcm{cr, tc, tc};
 	ToxMessageManager tmm{rmm, cr, tcm, tc, tc};
 	ToxTransferManager ttm{rmm, cr, tcm, tc, tc};
+
+	PluginManager pm;
 
 	{ // setup plugin instances
 		g_provideInstance<ConfigModelI>("ConfigModelI", "host", &conf);
@@ -313,7 +314,7 @@ int main(int argc, char** argv) {
 		const bool tick = time_delta_tick >= last_min_interval;
 
 		if (tick) {
-			quit = !tc.iterate();
+			quit = !tc.iterate(time_delta_tick);
 			tcm.iterate(time_delta_tick);
 			ttm.iterate();
 

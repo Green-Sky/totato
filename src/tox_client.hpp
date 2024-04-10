@@ -24,6 +24,7 @@ class ToxClient : public ToxDefaultImpl, public ToxEventProviderBase {
 		std::string _tox_profile_path;
 		std::string _tox_profile_password;
 		bool _tox_profile_dirty {true}; // set in callbacks
+		float _save_heat {0.f};
 
 	public:
 		ToxClient(ConfigModelI& conf, std::string_view save_path, std::string_view save_password);
@@ -35,7 +36,7 @@ class ToxClient : public ToxDefaultImpl, public ToxEventProviderBase {
 		void setDirty(void) { _tox_profile_dirty = true; }
 
 		// returns false when we shoul stop the program
-		bool iterate(void);
+		bool iterate(float time_delta);
 		void stop(void); // let it know it should exit
 
 		void setToxProfilePath(const std::string& new_path) { _tox_profile_path = new_path; }
@@ -47,5 +48,4 @@ class ToxClient : public ToxDefaultImpl, public ToxEventProviderBase {
 	private:
 		void saveToxProfile(void);
 };
-
 
