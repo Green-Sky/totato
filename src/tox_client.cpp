@@ -102,6 +102,7 @@ ToxClient::ToxClient(ConfigModelI& conf, std::string_view save_path, std::string
 	tox_options_set_end_port(options, conf.get_int("tox", "end_port").value_or(0));
 	tox_options_set_tcp_port(options, conf.get_int("tox", "tcp_port").value_or(0));
 	tox_options_set_hole_punching_enabled(options, conf.get_bool("tox", "hole_punching_enabled").value_or(true));
+	tox_options_set_experimental_groups_persistence(options, true);
 
 	TOX_ERR_NEW err_new;
 	_tox = tox_new(options, &err_new);
