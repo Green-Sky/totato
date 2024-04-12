@@ -38,6 +38,15 @@ if (NOT TARGET solanaceae_plugin)
 	FetchContent_MakeAvailable(solanaceae_plugin)
 endif()
 
+if (NOT TARGET solanaceae_object_store)
+	FetchContent_Declare(solanaceae_object_store
+		GIT_REPOSITORY https://github.com/Green-Sky/solanaceae_object_store.git
+		GIT_TAG master
+		EXCLUDE_FROM_ALL
+	)
+	FetchContent_MakeAvailable(solanaceae_object_store)
+endif()
+
 add_subdirectory(./toxcore)
 
 if (NOT TARGET solanaceae_toxcore)

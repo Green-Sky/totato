@@ -1,3 +1,4 @@
+#include <solanaceae/object_store/object_store.hpp>
 #include <solanaceae/util/simple_config_model.hpp>
 #include <solanaceae/contact/contact_model3.hpp>
 #include <solanaceae/message3/registry_message_model.hpp>
@@ -137,6 +138,8 @@ int main(int argc, char** argv) {
 	const auto started_at = std::chrono::steady_clock::now();
 	auto last_time_tick = std::chrono::steady_clock::now();
 
+	ObjectStore2 os;
+
 	std::string config_path {"config.json"};
 
 	// totato <config.json> -p <path/to/plugin.so>
@@ -224,6 +227,8 @@ int main(int argc, char** argv) {
 	PluginManager pm;
 
 	{ // setup plugin instances
+		g_provideInstance<ObjectStore2>("ObjectStore2", "host", &os);
+
 		g_provideInstance<ConfigModelI>("ConfigModelI", "host", &conf);
 		g_provideInstance<Contact3Registry>("Contact3Registry", "1", "host", &cr);
 		g_provideInstance<RegistryMessageModel>("RegistryMessageModel", "host", &rmm);
