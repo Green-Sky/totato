@@ -29,6 +29,9 @@
 
 #include <nlohmann/json.hpp>
 
+#include <entt/entt.hpp>
+#include <entt/fwd.hpp>
+
 #include <cstdint>
 #include <cmath>
 #include <chrono>

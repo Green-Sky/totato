@@ -25,6 +25,10 @@ add_executable(totato
 	./fun_commands.cpp
 )
 
+set_target_properties(totato PROPERTIES POSITION_INDEPENDENT_CODE ON)
+# probably not enough
+target_compile_definitions(totato PUBLIC ENTT_API_EXPORT)
+
 target_compile_features(totato PUBLIC cxx_std_17)
 target_link_libraries(totato PUBLIC
 	solanaceae_util
