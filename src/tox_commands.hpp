@@ -6,8 +6,8 @@
 // fwd
 class MessageCommandDispatcher;
 struct ConfigModelI;
-class ToxI;
-class ToxPrivateI;
+struct ToxI;
+struct ToxPrivateI;
 
 void registerToxCommands(
 	MessageCommandDispatcher& mcd,
