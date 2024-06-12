@@ -213,7 +213,7 @@ int main(int argc, char** argv) {
 	{ // name stuff
 		auto name = tc.toxSelfGetName();
 		if (name.empty()) {
-			name = "totato";
+			name = conf.get_string("tox", "name").value_or("totato");
 		}
 		conf.set("tox", "name", name);
 		tc.setSelfName(name); // TODO: this is ugly
