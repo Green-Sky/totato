@@ -225,7 +225,7 @@ int main(int argc, char** argv) {
 	AutoDirty ad{tc};
 	ToxContactModel2 tcm{cr, tc, tc};
 	ToxMessageManager tmm{rmm, cr, tcm, tc, tc};
-	ToxTransferManager ttm{rmm, cr, tcm, tc, tc};
+	ToxTransferManager ttm{rmm, cr, tcm, tc, tc, os};
 
 	PluginManager pm;
 
