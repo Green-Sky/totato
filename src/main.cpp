@@ -1,7 +1,7 @@
 #include <solanaceae/object_store/object_store.hpp>
 #include <solanaceae/util/simple_config_model.hpp>
 #include <solanaceae/contact/contact_model3.hpp>
-#include <solanaceae/message3/registry_message_model.hpp>
+#include <solanaceae/message3/registry_message_model_impl.hpp>
 #include <solanaceae/message3/message_time_sort.hpp>
 #include <solanaceae/plugin/plugin_manager.hpp>
 #include <solanaceae/toxcore/tox_event_logger.hpp>
@@ -186,7 +186,7 @@ int main(int argc, char** argv) {
 	}
 
 	Contact3Registry cr;
-	RegistryMessageModel rmm{cr};
+	RegistryMessageModelImpl rmm{cr};
 	MessageTimeSort mts{rmm};
 	MessageCleanser mc{cr, rmm, conf};
 	MessageCommandDispatcher mcd{cr, rmm, conf};
@@ -234,7 +234,7 @@ int main(int argc, char** argv) {
 
 		g_provideInstance<ConfigModelI>("ConfigModelI", "host", &conf);
 		g_provideInstance<Contact3Registry>("Contact3Registry", "1", "host", &cr);
-		g_provideInstance<RegistryMessageModel>("RegistryMessageModel", "host", &rmm);
+		g_provideInstance<RegistryMessageModelI>("RegistryMessageModelI", "host", &rmm);
 		g_provideInstance<MessageCommandDispatcher>("MessageCommandDispatcher", "host", &mcd);
 
 		g_provideInstance<ToxI>("ToxI", "host", &tc);

@@ -10,7 +10,7 @@
 
 MessageCleanser::MessageCleanser(
 	Contact3Registry& cr,
-	RegistryMessageModel& rmm,
+	RegistryMessageModelI& rmm,
 	ConfigModelI& conf
 ) : _cr(cr), _rmm(rmm), _conf(conf) {
 	if (!_conf.has_int("MessageCleanser", "old_age_minutes")) {

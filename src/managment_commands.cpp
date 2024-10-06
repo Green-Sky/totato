@@ -54,7 +54,7 @@ static std::string getStatusFromContact(
 bool handleContactAddToGroup(
 	ConfigModelI& conf,
 	Contact3Registry& cr,
-	RegistryMessageModel& rmm,
+	RegistryMessageModelI& rmm,
 
 	std::string_view params,
 	Message3Handle m,
@@ -113,7 +113,7 @@ void registerManagementCommands(
 	MessageCommandDispatcher& mcd,
 	ConfigModelI& conf,
 	Contact3Registry& cr,
-	RegistryMessageModel& rmm
+	RegistryMessageModelI& rmm
 ) {
 	mcd.registerCommand(
 		"Management", "manage",

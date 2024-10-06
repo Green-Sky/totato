@@ -11,6 +11,6 @@ void registerManagementCommands(
 	MessageCommandDispatcher& mcd,
 	ConfigModelI& conf,
 	Contact3Registry& cr,
-	RegistryMessageModel& rmm
+	RegistryMessageModelI& rmm
 );
 

@@ -18,7 +18,7 @@ void registerToxCommands(
 	MessageCommandDispatcher& mcd,
 	ConfigModelI& conf,
 	Contact3Registry& cr,
-	RegistryMessageModel& rmm,
+	RegistryMessageModelI& rmm,
 	ToxI& t,
 	ToxPrivateI& tp
 ) {

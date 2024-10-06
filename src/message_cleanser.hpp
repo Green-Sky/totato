@@ -5,7 +5,7 @@
 
 class MessageCleanser {
 	Contact3Registry& _cr;
-	RegistryMessageModel& _rmm;
+	RegistryMessageModelI& _rmm;
 	ConfigModelI& _conf;
 
 	static constexpr int64_t _old_age_default{150}; // minutes
@@ -16,7 +16,7 @@ class MessageCleanser {
 	public:
 		MessageCleanser(
 			Contact3Registry& cr,
-			RegistryMessageModel& rmm,
+			RegistryMessageModelI& rmm,
 			ConfigModelI& conf
 		);
 		~MessageCleanser(void);

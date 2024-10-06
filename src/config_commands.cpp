@@ -14,7 +14,7 @@ void registerConfigCommands(
 	MessageCommandDispatcher& mcd,
 	ConfigModelI& conf,
 	Contact3Registry& cr,
-	RegistryMessageModel& rmm
+	RegistryMessageModelI& rmm
 ) {
 	mcd.registerCommand(
 		"Config", "conf",
