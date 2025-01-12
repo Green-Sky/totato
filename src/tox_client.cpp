@@ -4,7 +4,7 @@
 #include <exception>
 #include <stdexcept>
 #include <system_error>
-#include <toxencryptsave/toxencryptsave.h>
+#include <tox/toxencryptsave.h>
 
 #include <sodium.h>
 
