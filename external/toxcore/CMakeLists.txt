@@ -18,13 +18,14 @@ if (NOT TARGET toxcore)
 
 	FetchContent_Declare(toxcore
 		GIT_REPOSITORY https://github.com/TokTok/c-toxcore.git
-		GIT_TAG v0.2.19
+		GIT_TAG v0.2.20
 		EXCLUDE_FROM_ALL
 	)
 
 	FetchContent_GetProperties(toxcore)
 	if(NOT toxcore_POPULATED)
-		FetchContent_Populate(toxcore)
+		# pupulates and adds cmake subdir
+		FetchContent_MakeAvailable(toxcore)
 
 		# TODO: should this all be in the populated if??
 
@@ -74,7 +75,7 @@ if (NOT TARGET toxcore)
 		#    @ONLY
 		#)
 
-		target_include_directories(toxcore INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/include/)
+		target_include_directories(toxcore INTERFACE ${toxcore_BINARY_DIR}/include/)
 
 		find_package(sodium QUIET)
 		if(unofficial-sodium_FOUND) # vcpkg
