@@ -4,7 +4,7 @@
   # https://youtu.be/7ZeTP_S6ZVI
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/release-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-24.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -18,8 +18,8 @@
       toxcore-src = pkgs.fetchFromGitHub {
         owner = "TokTok"; repo = "c-toxcore";
         fetchSubmodules = true;
-        rev = "v0.2.19";
-        hash = "sha256-6pdyQpHwYwUBeeHVuH/YTYdlOAtRgvrSuFE6Wlh+BnM=";
+        rev = "v0.2.20";
+        hash = "sha256-jJk3K1wDG84NtMQBmNvSDRMPYUsYIzjE0emiZ4Ugbhk=";
       };
       entt-src = pkgs.fetchFromGitHub {
         owner = "skypjack"; repo = "entt";
@@ -28,33 +28,38 @@
       };
       solanaceae_util-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_util";
-        rev = "17b4cce69b1e1712239700b4b13b242e61ca7d62";
-        hash = "sha256-QNLZgByoZsrXtAWk1i6O1bUkheWop/Oi/V9ggANFcgE=";
+        rev = "6cbcc9463ce3c4344e06d74d7df67175ada83b5f";
+        hash = "sha256-puWLMzCWLBQEsslIJE9sGA7fqp8v93J4zixyu64TqhY=";
       };
       solanaceae_contact-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_contact";
-        rev = "e40271670b4df96a8d02f32a1ba61a838419db48";
-        hash = "sha256-a/G1hpkZlnRF0Reg3PgJuToZclukImVDff3CpzSGz4k=";
+        rev = "e2917c497c91f91f8febcd1f43e462fad8359305";
+        hash = "sha256-gM9aT+lk+TmgiLyIeaGvHSpo55C+RNEnJvzFPLXrVMc=";
       };
       solanaceae_message3-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_message3";
-        rev = "7c28b232a46ebede9d6f09bc6eafb49bacfa99ea";
-        hash = "sha256-Ufb8qs/Tz2nHmUOMt8gsNDjf3+8YyoT7sTwYnsFQkC0=";
+        rev = "e55fb46027f16a1bc078f797ae9fcc7609d15659";
+        hash = "sha256-BdwHBCXWLiVL26djyasQEPW1PbwKCkeXdUivkPaQD3c=";
       };
       solanaceae_plugin-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_plugin";
-        rev = "82cfb6d4920a2d6eb19e3f3560b20ec281a5fa81";
-        hash = "sha256-3Bx9FHHze7MDxvHBEd3Ya/m05X5qMugoV4MUs1vtcZs=";
+        rev = "54cd23433df4acedede51e932f27d16fe4f35548";
+        hash = "sha256-Yy58w1PJFzIiN8kjqe7zerG9HewcdlBcN9P/YsjFCQs=";
       };
       solanaceae_toxcore-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_toxcore";
-        rev = "cf3679018be3f90db0f2f1e9433a966692976421";
-        hash = "sha256-XnsQR6TYhZWNSVjxe4wJdSD2WVdGM8ZHGmzrDlDyJC4=";
+        rev = "727c341899a82c911a27a5cac6d09bb23ce06b1d";
+        hash = "sha256-pI0ZKX6h/DMC9m0z4yC38kqGRP34ES12U9LcuO14fO0=";
       };
       solanaceae_tox-src = pkgs.fetchFromGitHub {
         owner = "Green-Sky"; repo = "solanaceae_tox";
-        rev = "ce81ef7cf7cea2fe2091912c9eafe787cbba6100";
-        hash = "sha256-2NwD5Dv6almBRNb8FTuzmiGDWFNZdPPIwJ1etWETpLE=";
+        rev = "8ad10978b96837eb7949f32ef433c5b37c2aa458";
+        hash = "sha256-0eV8tf1CDG1xHxKmDHBMSP/5hMoB2qRagOj1meHcEFY=";
+      };
+      solanaceae_object_store-src = pkgs.fetchFromGitHub {
+        owner = "Green-Sky"; repo = "solanaceae_object_store";
+        rev = "18d2888e3452074245375f329d90520ac250b595";
+        hash = "sha256-vfFepPHj58c8YBSa8G8bJjD6gcCj65T0Kx5aEhqsjok=";
       };
 
       pname = "totato";
@@ -78,7 +83,9 @@
         "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_PLUGIN=${solanaceae_plugin-src}"
         "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_TOXCORE=${solanaceae_toxcore-src}"
         "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_TOX=${solanaceae_tox-src}"
+        "-DFETCHCONTENT_SOURCE_DIR_SOLANACEAE_OBJECT_STORE=${solanaceae_object_store-src}"
         "-DFETCHCONTENT_SOURCE_DIR_JSON=${pkgs.nlohmann_json.src}" # we care less about version here
+        "-DFETCHCONTENT_SOURCE_DIR_ZSTD=${pkgs.zstd.src}"
       ];
 
       # TODO: replace with install command
