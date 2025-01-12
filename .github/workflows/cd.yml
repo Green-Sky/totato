@@ -73,7 +73,7 @@ jobs:
         submodules: recursive
 
     - name: Install Dependencies
-      run: vcpkg install libsodium:x64-windows-static pthreads:x64-windows-static
+      run: vcpkg install pkgconf:x64-windows libsodium:x64-windows-static pthreads:x64-windows-static
 
     # setup vs env
     - uses: ilammy/msvc-dev-cmd@v1
@@ -81,7 +81,7 @@ jobs:
         arch: amd64
 
     - name: Configure CMake
-      run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static
+      run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DPKG_CONFIG_EXECUTABLE=C:/vcpkg/installed/x64-windows/tools/pkgconf/pkgconf.exe
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 4
