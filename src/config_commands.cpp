@@ -1,6 +1,6 @@
 #include "./managment_commands.hpp"
 
-#include <solanaceae/contact/contact_model3.hpp>
+#include <solanaceae/contact/contact_store_i.hpp>
 #include <solanaceae/util/config_model.hpp>
 
 #include <solanaceae/message3/message_command_dispatcher.hpp>
@@ -13,7 +13,7 @@
 void registerConfigCommands(
 	MessageCommandDispatcher& mcd,
 	ConfigModelI& conf,
-	Contact3Registry& cr,
+	ContactStore4I& cs,
 	RegistryMessageModelI& rmm
 ) {
 	mcd.registerCommand(

@@ -1,18 +1,19 @@
 #include "./managment_commands.hpp"
 
-#include <random>
-#include <solanaceae/contact/contact_model3.hpp>
 //#include <solanaceae/util/config_model.hpp>
+#include <solanaceae/contact/contact_store_i.hpp>
 
 #include <solanaceae/message3/message_command_dispatcher.hpp>
 
-#include <solanaceae/message3/components.hpp>
 //#include <solanaceae/contact/components.hpp>
+#include <solanaceae/message3/components.hpp>
+
+#include <random>
 
 void registerFunCommands(
 	MessageCommandDispatcher& mcd,
 	ConfigModelI& conf,
-	Contact3Registry& cr,
+	ContactStore4I& cs,
 	RegistryMessageModelI& rmm
 ) {
 	mcd.registerCommand(

@@ -1,6 +1,6 @@
 #include <solanaceae/object_store/object_store.hpp>
 #include <solanaceae/util/simple_config_model.hpp>
-#include <solanaceae/contact/contact_model3.hpp>
+#include <solanaceae/contact/contact_store_impl.hpp>
 #include <solanaceae/message3/registry_message_model_impl.hpp>
 #include <solanaceae/message3/message_time_sort.hpp>
 #include <solanaceae/plugin/plugin_manager.hpp>
@@ -185,11 +185,11 @@ int main(int argc, char** argv) {
 		// TODO: name
 	}
 
-	Contact3Registry cr;
-	RegistryMessageModelImpl rmm{cr};
+	ContactStore4Impl cs;
+	RegistryMessageModelImpl rmm{cs};
 	MessageTimeSort mts{rmm};
-	MessageCleanser mc{cr, rmm, conf};
-	MessageCommandDispatcher mcd{cr, rmm, conf};
+	MessageCleanser mc{cs, rmm, conf};
+	MessageCommandDispatcher mcd{cs, rmm, conf};
 
 	{ // setup basic commands for bot
 		mcd.registerCommand(
@@ -223,9 +223,9 @@ int main(int argc, char** argv) {
 
 	ToxPrivateImpl tpi{tc.getTox()};
 	AutoDirty ad{tc};
-	ToxContactModel2 tcm{cr, tc, tc};
-	ToxMessageManager tmm{rmm, cr, tcm, tc, tc};
-	ToxTransferManager ttm{rmm, cr, tcm, tc, tc, os};
+	ToxContactModel2 tcm{cs, tc, tc};
+	ToxMessageManager tmm{rmm, cs, tcm, tc, tc};
+	ToxTransferManager ttm{rmm, cs, tcm, tc, tc, os};
 
 	PluginManager pm;
 
@@ -233,7 +233,7 @@ int main(int argc, char** argv) {
 		g_provideInstance<ObjectStore2>("ObjectStore2", "host", &os);
 
 		g_provideInstance<ConfigModelI>("ConfigModelI", "host", &conf);
-		g_provideInstance<Contact3Registry>("Contact3Registry", "1", "host", &cr);
+		g_provideInstance<ContactStore4I>("ContactStore4I", "host", &cs);
 		g_provideInstance<RegistryMessageModelI>("RegistryMessageModelI", "host", &rmm);
 		g_provideInstance<MessageCommandDispatcher>("MessageCommandDispatcher", "host", &mcd);
 
@@ -267,11 +267,11 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	registerManagementCommands(mcd, conf, cr, rmm);
+	registerManagementCommands(mcd, conf, cs, rmm);
 	// TODO: finish impl
-	//registerConfigCommands(mcd, conf, cr, rmm);
-	registerToxCommands(mcd, conf, cr, rmm, tc, tpi);
-	registerFunCommands(mcd, conf, cr, rmm);
+	//registerConfigCommands(mcd, conf, cs, rmm);
+	registerToxCommands(mcd, conf, cs, rmm, tc, tpi);
+	registerFunCommands(mcd, conf, cs, rmm);
 
 	mcd.registerCommand(
 		"totato", "",

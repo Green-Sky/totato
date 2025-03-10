@@ -1,6 +1,6 @@
 #include "./tox_commands.hpp"
 
-#include <solanaceae/contact/contact_model3.hpp>
+#include <solanaceae/contact/contact_store_i.hpp>
 #include <solanaceae/util/config_model.hpp>
 #include <solanaceae/util/utils.hpp>
 #include <solanaceae/toxcore/tox_interface.hpp>
@@ -17,7 +17,7 @@
 void registerToxCommands(
 	MessageCommandDispatcher& mcd,
 	ConfigModelI& conf,
-	Contact3Registry& cr,
+	ContactStore4I& cs,
 	RegistryMessageModelI& rmm,
 	ToxI& t,
 	ToxPrivateI& tp
@@ -42,6 +42,8 @@ void registerToxCommands(
 			reply += std::to_string(tp.toxDHTGetNumCloselist());
 			reply += "\ndht-closenum-announce-capable:";
 			reply += std::to_string(tp.toxDHTGetNumCloselistAnnounceCapable());
+
+			const auto& cr = cs.registry();
 
 			if (cr.all_of<Contact::Components::ToxFriendEphemeral>(contact_from)) {
 				const auto con_opt = t.toxFriendGetConnectionStatus(cr.get<Contact::Components::ToxFriendEphemeral>(contact_from).friend_number);
@@ -173,6 +175,8 @@ void registerToxCommands(
 				);
 				return true;
 			}
+
+			const auto& cr = cs.registry();
 
 			// get current group
 			if (!cr.all_of<Contact::Components::Parent>(contact_from)) {

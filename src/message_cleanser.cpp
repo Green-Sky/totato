@@ -1,5 +1,6 @@
 #include "./message_cleanser.hpp"
 
+#include <solanaceae/contact/contact_store_i.hpp>
 #include <solanaceae/contact/components.hpp>
 #include <solanaceae/message3/components.hpp>
 #include <solanaceae/util/utils.hpp>
@@ -9,10 +10,10 @@
 #include <cstdint>
 
 MessageCleanser::MessageCleanser(
-	Contact3Registry& cr,
+	ContactStore4I& cs,
 	RegistryMessageModelI& rmm,
 	ConfigModelI& conf
-) : _cr(cr), _rmm(rmm), _conf(conf) {
+) : _cs(cs), _rmm(rmm), _conf(conf) {
 	if (!_conf.has_int("MessageCleanser", "old_age_minutes")) {
 		_conf.set("MessageCleanser", "old_age_minutes", int64_t(_old_age_default));
 	}
@@ -30,15 +31,17 @@ float MessageCleanser::iterate(float time_delta) {
 
 		uint64_t now_ts = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
+		const auto& cr = _cs.registry();
+
 		// TODO: iterate rmm directly
 		//_rmm.get();
 		// workaround by iterating contacts
-		for (const auto& c : _cr.view<Contact::Components::TagBig>()) {
+		for (const auto& c : cr.view<Contact::Components::TagBig>()) {
 			if (auto* reg = _rmm.get(c); reg != nullptr) {
 				float old_age {0.f};
 				{ // old age from conf
 					// TODO: find some way to extract this (maybe map into contact reg?)
-					if (const auto* id_comp = _cr.try_get<Contact::Components::ID>(c); id_comp != nullptr) {
+					if (const auto* id_comp = cr.try_get<Contact::Components::ID>(c); id_comp != nullptr) {
 						const auto id_hex = bin2hex(id_comp->data);
 						old_age = _conf.get_int("MessageCleanser", "old_age_minutes", id_hex).value_or(_old_age_default);
 					} else {

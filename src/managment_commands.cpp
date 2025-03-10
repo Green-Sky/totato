@@ -1,6 +1,6 @@
 #include "./managment_commands.hpp"
 
-#include <solanaceae/contact/contact_model3.hpp>
+#include <solanaceae/contact/contact_store_i.hpp>
 #include <solanaceae/util/config_model.hpp>
 
 #include <solanaceae/message3/message_command_dispatcher.hpp>
@@ -12,25 +12,22 @@
 #include <iostream>
 #include <algorithm>
 
-static std::optional<Contact3> getContactFromIDStr(
-	Contact3Registry& cr,
+static std::optional<Contact4> getContactFromIDStr(
+	ContactStore4I& cs,
 	std::string_view id_str
 ) {
-	const std::vector<uint8_t> id = hex2bin(std::string{id_str});
-	const auto view = cr.view<Contact::Components::ID>();
-	const auto found_contact = std::find_if(view.begin(), view.end(), [&id, &view](const Contact3 c) -> bool {
-		return view.get<Contact::Components::ID>(c).data == id;
-	});
+	const std::vector<uint8_t> id = hex2bin(id_str);
+	const auto found_contact = cs.getOneContactByID(ByteSpan{id});
 
-	if (found_contact != view.end()) {
-		return *found_contact;
+	if (static_cast<bool>(found_contact)) {
+		return found_contact;
 	} else {
 		return std::nullopt;
 	}
 }
 
 static std::string getStatusFromContact(
-	Contact3Handle c
+	ContactHandle4 c
 ) {
 	std::string status_str;
 
@@ -53,7 +50,7 @@ static std::string getStatusFromContact(
 
 bool handleContactAddToGroup(
 	ConfigModelI& conf,
-	Contact3Registry& cr,
+	ContactStore4I& cs,
 	RegistryMessageModelI& rmm,
 
 	std::string_view params,
@@ -73,7 +70,7 @@ bool handleContactAddToGroup(
 		return true;
 	}
 
-	const auto target_opt = getContactFromIDStr(cr, params);
+	const auto target_opt = getContactFromIDStr(cs, params);
 	if (!target_opt.has_value()) {
 		rmm.sendText(
 			contact_from,
@@ -99,7 +96,7 @@ bool handleContactAddToGroup(
 	reply += "' to the ";
 	reply += group;
 	reply += "s.\n";
-	reply += getStatusFromContact(Contact3Handle{cr, target_opt.value()});
+	reply += getStatusFromContact(cs.contactHandle(target_opt.value()));
 
 	rmm.sendText(
 		contact_from,
@@ -112,14 +109,14 @@ bool handleContactAddToGroup(
 void registerManagementCommands(
 	MessageCommandDispatcher& mcd,
 	ConfigModelI& conf,
-	Contact3Registry& cr,
+	ContactStore4I& cs,
 	RegistryMessageModelI& rmm
 ) {
 	mcd.registerCommand(
 		"Management", "manage",
 		"admin-add",
 		[&](std::string_view params, Message3Handle m) -> bool {
-			return handleContactAddToGroup(conf, cr, rmm, params, m, "admin");
+			return handleContactAddToGroup(conf, cs, rmm, params, m, "admin");
 		},
 		"Add an admin by ID.",
 		MessageCommandDispatcher::Perms::ADMIN
@@ -129,7 +126,7 @@ void registerManagementCommands(
 		"Management", "manage",
 		"mod-add",
 		[&](std::string_view params, Message3Handle m) -> bool {
-			return handleContactAddToGroup(conf, cr, rmm, params, m, "moderator");
+			return handleContactAddToGroup(conf, cs, rmm, params, m, "moderator");
 		},
 		"Add a moderator by ID.",
 		MessageCommandDispatcher::Perms::ADMIN

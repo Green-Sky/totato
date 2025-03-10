@@ -1,6 +1,6 @@
 #pragma once
 
-#include <solanaceae/contact/contact_model3.hpp>
+#include <solanaceae/contact/fwd.hpp>
 #include <solanaceae/message3/registry_message_model.hpp>
 
 // fwd
@@ -12,7 +12,7 @@ struct ToxPrivateI;
 void registerToxCommands(
 	MessageCommandDispatcher& mcd,
 	ConfigModelI& conf,
-	Contact3Registry& cr,
+	ContactStore4I& cs,
 	RegistryMessageModelI& rmm,
 	ToxI& t,
 	ToxPrivateI& tp

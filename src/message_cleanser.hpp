@@ -4,7 +4,7 @@
 #include <solanaceae/util/config_model.hpp>
 
 class MessageCleanser {
-	Contact3Registry& _cr;
+	ContactStore4I& _cs;
 	RegistryMessageModelI& _rmm;
 	ConfigModelI& _conf;
 
@@ -15,7 +15,7 @@ class MessageCleanser {
 
 	public:
 		MessageCleanser(
-			Contact3Registry& cr,
+			ContactStore4I& cs,
 			RegistryMessageModelI& rmm,
 			ConfigModelI& conf
 		);
