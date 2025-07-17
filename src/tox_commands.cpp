@@ -122,7 +122,18 @@ void registerToxCommands(
 		[&](std::string_view params, Message3Handle m) -> bool {
 			const auto contact_from = m.get<Message::Components::ContactFrom>().c;
 
-			if (params.size() != 32*2) {
+			// split at first space for password
+			std::string_view group_id = params;
+			std::string_view password = "";
+			{
+				const auto space_pos = params.find_first_of(' ');
+				if (space_pos != params.npos && space_pos != 0 && space_pos+1 < params.size()) {
+					group_id = params.substr(0, space_pos);
+					password = params.substr(space_pos+1);
+				}
+			}
+
+			if (group_id.size() != 32*2) {
 				rmm.sendText(
 					contact_from,
 					"error joining group, id is not the correct size!"
@@ -133,11 +144,11 @@ void registerToxCommands(
 			auto name_opt = conf.get_string("tox", "name");
 
 			// TODO: add tcm interface
-			const auto [_, err] = t.toxGroupJoin(hex2bin(std::string{params}), std::string{name_opt.value_or("no-name-found")}, "");
+			const auto [_, err] = t.toxGroupJoin(hex2bin(std::string{group_id}), std::string_view{name_opt.value_or("no-name-found")}, password);
 			if (err == Tox_Err_Group_Join::TOX_ERR_GROUP_JOIN_OK) {
 				rmm.sendText(
 					contact_from,
-					"joining group..."
+					std::string{"joining group..."} + (password.empty() ? "" : " with password")
 				);
 			} else {
 				rmm.sendText(
@@ -148,7 +159,7 @@ void registerToxCommands(
 
 			return true;
 		},
-		"join a tox group by id"
+		"join a tox group by 'id [password]'"
 	);
 
 	mcd.registerCommand(
