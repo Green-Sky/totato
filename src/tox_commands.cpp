@@ -12,7 +12,9 @@
 #include <solanaceae/contact/components.hpp>
 #include <solanaceae/tox_contacts/components.hpp>
 
-#include <iostream>
+#include <solanaceae/util/string_view_split.hpp>
+
+#include <charconv>
 
 void registerToxCommands(
 	MessageCommandDispatcher& mcd,
@@ -226,6 +228,82 @@ void registerToxCommands(
 			return true;
 		},
 		"invite a tox friend to the same tox group"
+	);
+
+	mcd.registerCommand(
+		"tox", "tox",
+		"connect",
+		[&](std::string_view params, Message3Handle m) -> bool {
+			const auto contact_from = m.get<Message::Components::ContactFrom>().c;
+			const auto split = MM::std_utils::split(params, " ");
+
+			if (split.size() != 3) {
+				rmm.sendText(
+					contact_from,
+					"error, invalid number of params"
+				);
+				return true;
+			}
+
+			try {
+				const auto addr = split.at(0);
+				const auto port_sv = split.at(1);
+				const auto pubkey_sv = split.at(2);
+
+				uint16_t port{0};
+				{ // port
+					auto result = std::from_chars(port_sv.data(), port_sv.data() + port_sv.size(), port);
+					if (result.ec != std::errc{}) {
+						rmm.sendText(
+							contact_from,
+							"error, invalid port"
+						);
+						return true;
+					}
+				}
+
+				// pubkey
+				const auto pubkey = hex2bin(pubkey_sv);
+				if (pubkey.size() != 32/*TOX_PUBLIC_KEY_SIZE*/) {
+						rmm.sendText(
+							contact_from,
+							"error, invalid id/pubkey"
+						);
+						return true;
+				}
+
+				std::string response;
+				{
+					Tox_Err_Bootstrap err = t.toxBootstrap(std::string{addr}, port, pubkey);
+					if (err != Tox_Err_Bootstrap::TOX_ERR_BOOTSTRAP_OK) {
+						response += "add udp node failed with " + std::to_string(err) + "\n";
+					} else {
+						response += "add udp node succeeded\n";
+					}
+				}
+				{
+					Tox_Err_Bootstrap err = t.toxAddTcpRelay(std::string{addr}, port, pubkey);
+					if (err != Tox_Err_Bootstrap::TOX_ERR_BOOTSTRAP_OK) {
+						response += "add tcp relay failed with " + std::to_string(err);
+					} else {
+						response += "add tcp relay succeeded";
+					}
+				}
+
+				rmm.sendText(
+					contact_from,
+					response
+				);
+				return true;
+			} catch (...) {
+				rmm.sendText(
+					contact_from,
+					"error, unknown exception"
+				);
+				return true;
+			}
+		},
+		"connect to a DHT node. 'addr port pubkey'"
 	);
 }
 
