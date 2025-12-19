@@ -35,7 +35,7 @@ void registerToxCommands(
 			std::string reply{"dht:"};
 
 			if (tox_self_status == Tox_Connection::TOX_CONNECTION_UDP) {
-				reply += "upd-direct";
+				reply += "udp-direct";
 			} else if (tox_self_status == Tox_Connection::TOX_CONNECTION_TCP) {
 				reply += "tcp-relayed";
 			}
