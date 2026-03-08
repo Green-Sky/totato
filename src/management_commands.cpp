@@ -1,4 +1,4 @@
-#include "./managment_commands.hpp"
+#include "./management_commands.hpp"
 
 #include <solanaceae/contact/contact_store_i.hpp>
 #include <solanaceae/util/config_model.hpp>
@@ -8,9 +8,6 @@
 #include <solanaceae/message3/components.hpp>
 #include <solanaceae/contact/components.hpp>
 #include <solanaceae/util/utils.hpp>
-
-#include <iostream>
-#include <algorithm>
 
 static std::optional<Contact4> getContactFromIDStr(
 	ContactStore4I& cs,

@@ -1,4 +1,4 @@
-#include "./managment_commands.hpp"
+#include "./config_commands.hpp"
 
 #include <solanaceae/contact/contact_store_i.hpp>
 #include <solanaceae/util/config_model.hpp>
@@ -7,8 +7,6 @@
 
 #include <solanaceae/message3/components.hpp>
 #include <solanaceae/contact/components.hpp>
-
-#include <iostream>
 
 void registerConfigCommands(
 	MessageCommandDispatcher& mcd,

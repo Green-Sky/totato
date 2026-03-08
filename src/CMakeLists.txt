@@ -12,8 +12,8 @@ add_executable(totato
 	./message_cleanser.hpp
 	./message_cleanser.cpp
 
-	./managment_commands.hpp
-	./managment_commands.cpp
+	./management_commands.hpp
+	./management_commands.cpp
 
 	./config_commands.hpp
 	./config_commands.cpp

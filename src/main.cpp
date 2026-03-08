@@ -16,7 +16,7 @@
 #include "./message_cleanser.hpp"
 #include <solanaceae/message3/message_command_dispatcher.hpp>
 
-#include "./managment_commands.hpp"
+#include "./management_commands.hpp"
 #include "./config_commands.hpp"
 #include "./tox_commands.hpp"
 #include "./fun_commands.hpp"

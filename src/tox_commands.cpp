@@ -104,7 +104,7 @@ void registerToxCommands(
 			if (err == Tox_Err_Friend_Add::TOX_ERR_FRIEND_ADD_OK) {
 				rmm.sendText(
 					contact_from,
-					"freind request sent"
+					"friend request sent"
 				);
 			} else {
 				rmm.sendText(
