@@ -5,11 +5,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1694529238,
-        "narHash": "sha256-zsNZZGTGnMOf9YpHKJqMSsa0dXbfmxeoJ7xHlrt+xmY=",
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "ff7b65b44d01cf9ba6a71320833626af21126384",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
         "type": "github"
       },
       "original": {
@@ -20,16 +20,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1736692550,
-        "narHash": "sha256-7tk8xH+g0sJkKLTJFOxphJxxOjMDFMWv24nXslaU2ro=",
+        "lastModified": 1773050225,
+        "narHash": "sha256-P2iGJwvzj031ZJA7cgbehYC+21fLJjkB7NG42VJ1CYw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "7c4869c47090dd7f9f1bdfb49a22aea026996815",
+        "rev": "397b2b93739ce0944a5dd912894ec51c3b090d3d",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "release-24.11",
+        "ref": "release-25.11",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -37,7 +37,126 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "solanaceae_contact-src": "solanaceae_contact-src",
+        "solanaceae_message3-src": "solanaceae_message3-src",
+        "solanaceae_object_store-src": "solanaceae_object_store-src",
+        "solanaceae_plugin-src": "solanaceae_plugin-src",
+        "solanaceae_tox-src": "solanaceae_tox-src",
+        "solanaceae_toxcore-src": "solanaceae_toxcore-src",
+        "solanaceae_util-src": "solanaceae_util-src"
+      }
+    },
+    "solanaceae_contact-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1771765939,
+        "narHash": "sha256-iYa4iPMS1vzyqRWdB3f9mHqZszfocwSbu+lpsTD025Y=",
+        "owner": "Green-Sky",
+        "repo": "solanaceae_contact",
+        "rev": "2e8c0d16d2bf1e09f712ee2a1363d35095de2a7e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Green-Sky",
+        "repo": "solanaceae_contact",
+        "type": "github"
+      }
+    },
+    "solanaceae_message3-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1771754898,
+        "narHash": "sha256-TTcY1CYCYW+rryHQ/9hnnPkw+NCSXf3sVAGT5kTjwmY=",
+        "owner": "Green-Sky",
+        "repo": "solanaceae_message3",
+        "rev": "21f52d7a027e2cc9bd450e0a39879c5677822c14",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Green-Sky",
+        "repo": "solanaceae_message3",
+        "type": "github"
+      }
+    },
+    "solanaceae_object_store-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1769878175,
+        "narHash": "sha256-JUGD6JrpzowmXVbNmxdcgKvcA3E5YDF67UvwY6yp4FU=",
+        "owner": "Green-Sky",
+        "repo": "solanaceae_object_store",
+        "rev": "fef73bda8fc60f9c56fad906c8700ce3fb2b19e3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Green-Sky",
+        "repo": "solanaceae_object_store",
+        "type": "github"
+      }
+    },
+    "solanaceae_plugin-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1744397210,
+        "narHash": "sha256-My6N0h6uMZ2RaC+Ff1lINITpMqrNKFK2mjpzW6725YU=",
+        "owner": "Green-Sky",
+        "repo": "solanaceae_plugin",
+        "rev": "d03d2dae67381ab228fe0fa134756489e92b9c86",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Green-Sky",
+        "repo": "solanaceae_plugin",
+        "type": "github"
+      }
+    },
+    "solanaceae_tox-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1771755031,
+        "narHash": "sha256-dxlE/OCkaQxVoVFo40DP9G14RIZ152RlUDxW607PdC8=",
+        "owner": "Green-Sky",
+        "repo": "solanaceae_tox",
+        "rev": "581c2ec08d12cf1db4dc17793741fd328c5463d5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Green-Sky",
+        "repo": "solanaceae_tox",
+        "type": "github"
+      }
+    },
+    "solanaceae_toxcore-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767719504,
+        "narHash": "sha256-6tMklwpEt7C5usF1TBTPwKOqURo6mP8DPWc3wH4u3cI=",
+        "owner": "Green-Sky",
+        "repo": "solanaceae_toxcore",
+        "rev": "a030bf2732fb5eddcf242a260bd0d2f87a793937",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Green-Sky",
+        "repo": "solanaceae_toxcore",
+        "type": "github"
+      }
+    },
+    "solanaceae_util-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1768062016,
+        "narHash": "sha256-XjKgGSLS1QkR4iTmzBvWRWQ35FviCs8HMa+o2sCtoUM=",
+        "owner": "Green-Sky",
+        "repo": "solanaceae_util",
+        "rev": "905605ef4769ead85a3c45895963767e0461f892",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Green-Sky",
+        "repo": "solanaceae_util",
+        "type": "github"
       }
     },
     "systems": {
