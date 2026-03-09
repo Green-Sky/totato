@@ -18,7 +18,7 @@ if (NOT TARGET toxcore)
 
 	FetchContent_Declare(toxcore
 		GIT_REPOSITORY https://github.com/TokTok/c-toxcore.git
-		GIT_TAG v0.2.21
+		GIT_TAG v0.2.22
 		EXCLUDE_FROM_ALL
 	)
 
@@ -26,10 +26,6 @@ if (NOT TARGET toxcore)
 	if(NOT toxcore_POPULATED)
 		# pupulates and adds cmake subdir
 		FetchContent_MakeAvailable(toxcore)
-
-		# TODO: should this all be in the populated if??
-
-		set(TOX_DIR "${toxcore_SOURCE_DIR}/")
 
 		#message("II BUILD_TOXAV: ${BUILD_TOXAV}")
 
@@ -50,30 +46,45 @@ if (NOT TARGET toxcore)
 
 		# HACK: "install" api headers into binary dir
 		configure_file(
-			${TOX_DIR}toxcore/tox.h
+			${toxcore_SOURCE_DIR}/toxcore/tox.h
 			${toxcore_BINARY_DIR}/include/tox/tox.h
 			@ONLY
 		)
 		configure_file(
-			${TOX_DIR}toxcore/tox_events.h
+			${toxcore_SOURCE_DIR}/toxcore/tox_events.h
 			${toxcore_BINARY_DIR}/include/tox/tox_events.h
 			@ONLY
 		)
 		configure_file(
-			${TOX_DIR}toxcore/tox_private.h
+			${toxcore_SOURCE_DIR}/toxcore/tox_log_level.h
+			${toxcore_BINARY_DIR}/include/tox/tox_log_level.h
+			@ONLY
+		)
+		configure_file(
+			${toxcore_SOURCE_DIR}/toxcore/tox_options.h
+			${toxcore_BINARY_DIR}/include/tox/tox_options.h
+			@ONLY
+		)
+		configure_file(
+			${toxcore_SOURCE_DIR}/toxcore/tox_private.h
 			${toxcore_BINARY_DIR}/include/tox/tox_private.h
 			@ONLY
 		)
 		configure_file(
-			${TOX_DIR}toxencryptsave/toxencryptsave.h
+			${toxcore_SOURCE_DIR}/toxcore/tox_attributes.h
+			${toxcore_BINARY_DIR}/include/tox/tox_attributes.h
+			@ONLY
+		)
+		configure_file(
+			${toxcore_SOURCE_DIR}/toxencryptsave/toxencryptsave.h
 			${toxcore_BINARY_DIR}/include/tox/toxencryptsave.h
 			@ONLY
 		)
-		#configure_file(
-		#    ${TOX_DIR}toxav/toxav.h
-		#    ${toxcore_BINARY_DIR}/include/tox/toxav.h
-		#    @ONLY
-		#)
+		configure_file(
+			${toxcore_SOURCE_DIR}/toxav/toxav.h
+			${toxcore_BINARY_DIR}/include/tox/toxav.h
+			@ONLY
+		)
 
 		target_include_directories(toxcore INTERFACE ${toxcore_BINARY_DIR}/include/)
 

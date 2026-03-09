@@ -104,6 +104,9 @@ ToxClient::ToxClient(ConfigModelI& conf, std::string_view save_path, std::string
 	tox_options_set_hole_punching_enabled(options, conf.get_bool("tox", "hole_punching_enabled").value_or(true));
 	tox_options_set_experimental_groups_persistence(options, true);
 
+	// annoyingly the inverse
+	tox_options_set_experimental_disable_dns(options, !conf.get_bool("tox", "dns").value_or(false));
+
 	TOX_ERR_NEW err_new;
 	_tox = tox_new(options, &err_new);
 	tox_options_free(options);
