@@ -29,7 +29,7 @@ void registerConfigCommands(
 			// split params into:
 			// - module
 			// - category
-			const auto first_space_pos = params.find_first_of(' ');
+			const int64_t first_space_pos = params.find_first_of(' ');
 
 			// x x x
 			// 01234
@@ -53,7 +53,7 @@ void registerConfigCommands(
 
 			rmm.sendText(
 				contact_from,
-				"he"
+				"TODO: implement me"
 			);
 			return true;
 		},
