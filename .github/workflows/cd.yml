@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
 
@@ -29,7 +29,7 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 4
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v6
       with:
         name: ${{ github.event.repository.name }}-ubuntu20.04-x86_64
         # TODO: do propper packing
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
 
@@ -50,12 +50,12 @@ jobs:
       ## TODO: is 2.6 new enough?
       #run: sudo apt update && sudo apt -y install nix
 
-    - uses: cachix/install-nix-action@v24
+    - uses: cachix/install-nix-action@v31
 
     - name: Nix build
       run: nix build '.#static'
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v6
       with:
         name: ${{ github.event.repository.name }}-linux-static-muslc-x86_64
         # TODO: do propper packing
@@ -68,7 +68,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
 
@@ -86,7 +86,7 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 4
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v6
       with:
         name: ${{ github.event.repository.name }}-windows-msvc-x86_64
         # TODO: do propper packing
