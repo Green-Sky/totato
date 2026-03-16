@@ -28,16 +28,19 @@ void registerToxCommands(
 		"tox", "tox",
 		"status",
 		[&](std::string_view, Message3Handle m) -> bool {
-			const auto tox_self_status = t.toxSelfGetConnectionStatus();
-
 			const auto contact_from = m.get<Message::Components::ContactFrom>().c;
 
 			std::string reply{"dht:"};
-
-			if (tox_self_status == Tox_Connection::TOX_CONNECTION_UDP) {
-				reply += "udp-direct";
-			} else if (tox_self_status == Tox_Connection::TOX_CONNECTION_TCP) {
-				reply += "tcp-relayed";
+			switch (t.toxSelfGetConnectionStatus()) {
+				case Tox_Connection::TOX_CONNECTION_UDP:
+					reply += "udp-direct";
+					break;
+				case Tox_Connection::TOX_CONNECTION_TCP:
+					reply += "tcp-relayed";
+					break;
+				default:
+					reply += "none";
+					break;
 			}
 
 			reply += "\ndht-closenum:";
@@ -73,15 +76,88 @@ void registerToxCommands(
 				reply += "\nunk";
 			}
 
-			rmm.sendText(
-				contact_from,
-				reply
-			);
-
+			rmm.sendText(contact_from, reply);
 			return true;
 		},
 		"Query the tox status of dht and to you.",
 		MessageCommandDispatcher::Perms::EVERYONE
+	);
+
+	mcd.registerCommand(
+		"tox", "tox",
+		"status-detailed",
+		[&](std::string_view, Message3Handle m) -> bool {
+			const auto contact_from = m.get<Message::Components::ContactFrom>().c;
+
+			std::string reply{"dht:"};
+			switch (t.toxSelfGetConnectionStatus()) {
+				case Tox_Connection::TOX_CONNECTION_UDP:
+					reply += "udp-direct";
+					break;
+				case Tox_Connection::TOX_CONNECTION_TCP:
+					reply += "tcp-relayed";
+					break;
+				default:
+					reply += "none";
+					break;
+			}
+
+			{
+				auto [port, err] = t.toxSelfGetUDPPort();
+				if (err == Tox_Err_Get_Port::TOX_ERR_GET_PORT_OK && port.has_value()) {
+					reply += "\nudp-port:" + std::to_string(port.value());
+				}
+			}
+			{
+				auto [port, err] = t.toxSelfGetTCPPort();
+				if (err == Tox_Err_Get_Port::TOX_ERR_GET_PORT_OK && port.has_value()) {
+					reply += "\ntcp-port:" + std::to_string(port.value());
+				}
+			}
+
+			const auto dht_pubkey = t.toxSelfGetDHTID();
+			if (!dht_pubkey.empty()) {
+				reply += "\ndht-pubkey:" + bin2hex(dht_pubkey);
+			}
+
+			reply += "\ndht-closenum:";
+			reply += std::to_string(tp.toxDHTGetNumCloselist());
+			reply += "\ndht-closenum-announce-capable:";
+			reply += std::to_string(tp.toxDHTGetNumCloselistAnnounceCapable());
+
+			const auto& cr = cs.registry();
+
+			if (cr.all_of<Contact::Components::ToxFriendEphemeral>(contact_from)) {
+				const auto con_opt = t.toxFriendGetConnectionStatus(cr.get<Contact::Components::ToxFriendEphemeral>(contact_from).friend_number);
+				if (!con_opt.has_value() || con_opt.value() == Tox_Connection::TOX_CONNECTION_NONE) {
+					reply += "\nfriend:offline";
+				} else if (con_opt.value() == Tox_Connection::TOX_CONNECTION_UDP) {
+					reply += "\nfriend:udp-direct";
+				} else if (con_opt.value() == Tox_Connection::TOX_CONNECTION_TCP) {
+					reply += "\nfriend:tcp-relayed";
+				}
+			} else if (cr.all_of<Contact::Components::ToxGroupPeerEphemeral>(contact_from)) {
+				const auto [group_number, peer_number] = cr.get<Contact::Components::ToxGroupPeerEphemeral>(contact_from);
+
+				const auto [con_opt, _] = t.toxGroupPeerGetConnectionStatus(group_number, peer_number);
+				if (!con_opt.has_value() || con_opt.value() == Tox_Connection::TOX_CONNECTION_NONE) {
+					reply += "\ngroup-peer:offline";
+				} else if (con_opt.value() == Tox_Connection::TOX_CONNECTION_UDP) {
+					reply += "\ngroup-peer:udp-direct";
+				} else if (con_opt.value() == Tox_Connection::TOX_CONNECTION_TCP) {
+					reply += "\ngroup-peer:tcp-relayed";
+				}
+			} else if (cr.any_of<Contact::Components::ToxFriendPersistent, Contact::Components::ToxGroupPeerPersistent>(contact_from)) {
+				reply += "\noffline";
+			} else {
+				reply += "\nunk";
+			}
+
+			rmm.sendText(contact_from, reply);
+			return true;
+		},
+		"Query the tox status of dht and to you, with more details like DHT pubkey and ports.",
+		MessageCommandDispatcher::Perms::ADMIN
 	);
 
 	mcd.registerCommand(
