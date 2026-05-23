@@ -18,7 +18,7 @@ if (NOT TARGET toxcore)
 
 	FetchContent_Declare(toxcore
 		GIT_REPOSITORY https://github.com/TokTok/c-toxcore.git
-		GIT_TAG v0.2.22
+		GIT_TAG v0.2.23-rc.1
 		EXCLUDE_FROM_ALL
 	)
 
