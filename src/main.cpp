@@ -22,11 +22,6 @@
 #include "./fun_commands.hpp"
 #include <solanaceae/message3/components.hpp> // TODO: move uptime
 
-//#include <solanaceae/message3/components.hpp>
-//#include <solanaceae/contact/components.hpp>
-//#include <solanaceae/tox_contacts/components.hpp>
-//#include <solanaceae/toxcore/utils.hpp>
-
 #include <nlohmann/json.hpp>
 
 #include <entt/entt.hpp>
@@ -333,8 +328,6 @@ int main(int argc, char** argv) {
 			// dont sleep and do an extra check
 
 			last_time_tick = new_time;
-			//std::cout << "M: time_delta_tick: " << time_delta_tick << "\n";
-			//std::cout << "M: last_min_interval: " << last_min_interval << " (t:" << tox_interval << " p:" << pm_interval << ")\n";
 		} else {
 			// TODO: replace with something that works on windows
 			const float sleep_dur = std::max(last_min_interval-time_delta_tick, 0.001f);
