@@ -181,8 +181,6 @@ int main(int argc, char** argv) {
 				conf.set("tox", "save_file_path", std::filesystem::canonical(config_path_base / tox_conf_path).u8string());
 			}
 		}
-
-		// TODO: name
 	}
 
 	ContactStore4Impl cs;
@@ -207,17 +205,9 @@ int main(int argc, char** argv) {
 
 
 	// TODO: password?
-	ToxClient tc{conf, conf.get_string("tox", "save_file_path").value(), ""};
+	ToxClient tc{conf, conf.get_string("tox", "save_file_path").value(), "", "totato"};
 	ToxEventLogger tel{tc, std::cout}; // TODO: config
 	tel.subscribeAll();
-	{ // name stuff
-		auto name = tc.toxSelfGetName();
-		if (name.empty()) {
-			name = conf.get_string("tox", "name").value_or("totato");
-		}
-		conf.set("tox", "name", name);
-		tc.setSelfName(name); // TODO: this is ugly
-	}
 
 	std::cout << "TOTATO: own address: " << tc.toxSelfGetAddressStr() << "\n";
 

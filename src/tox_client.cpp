@@ -20,7 +20,7 @@ static void eee(std::string& mod) {
 	}
 }
 
-ToxClient::ToxClient(ConfigModelI& conf, std::string_view save_path, std::string_view save_password) :
+ToxClient::ToxClient(ConfigModelI& conf, std::string_view save_path, std::string_view save_password, std::string_view new_username) :
 	_tox_profile_path(save_path), _tox_profile_password(save_password)
 {
 	TOX_ERR_OPTIONS_NEW err_opt_new;
@@ -124,6 +124,22 @@ ToxClient::ToxClient(ConfigModelI& conf, std::string_view save_path, std::string
 	// no callbacks, use events
 	tox_events_init(_tox);
 
+	{ // apply profile identity from config
+		if (conf.has_string("tox", "name")) {
+			setSelfName(conf.get_string("tox", "name").value());
+		} else {
+			auto name = toxSelfGetName();
+			if (name.empty()) {
+				name = new_username;
+				setSelfName(name);
+			}
+			conf.set("tox", "name", name);
+		}
+		if (conf.has_string("tox", "status_message")) {
+			setSelfStatusMessage(conf.get_string("tox", "status_message").value());
+		}
+	}
+
 	runBootstrap();
 }
 
@@ -225,7 +241,8 @@ void ToxClient::saveToxProfile(void) {
 	}
 
 	std::filesystem::path tmp_path = _tox_profile_path + ".tmp";
-	tmp_path.replace_filename("." + tmp_path.filename().generic_u8string());
+	const auto tmp_filename_u8 = tmp_path.filename().generic_u8string();
+	tmp_path.replace_filename("." + std::string{tmp_filename_u8.cbegin(), tmp_filename_u8.cend()});
 
 	try {
 		std::ofstream ofile{tmp_path, std::ios::binary};
