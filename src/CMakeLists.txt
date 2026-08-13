@@ -23,6 +23,9 @@ add_executable(totato
 
 	./fun_commands.hpp
 	./fun_commands.cpp
+
+	./status_commands.hpp
+	./status_commands.cpp
 )
 
 set_target_properties(totato PROPERTIES POSITION_INDEPENDENT_CODE ON)
